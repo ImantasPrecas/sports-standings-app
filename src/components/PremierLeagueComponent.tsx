@@ -1,8 +1,40 @@
-import { Card } from './ui/Card'
-import { CardHeader } from './ui/CardHeader'
-import { CardTitle } from './ui/CardTitle'
-import { Input } from './ui/Input'
-import { SectionWrapper } from './ui/SectionWrapper'
+import { Card } from '@/components/ui/Card'
+import { CardHeader } from '@/components/ui/CardHeader'
+import { CardTitle } from '@/components/ui/CardTitle'
+import { Input } from '@/components/ui/Input'
+import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { SelectEntity } from '@/components/ui/SelectEntity'
+import { Button } from './ui/Button'
+import { StandingsTable } from './ui/StandingsTable'
+
+const teams = [
+  { name: 'Team 1', value: 'team1' },
+  { name: 'Team 2', value: 'team2' },
+  { name: 'Team 3', value: 'team3' },
+]
+
+const tableData = {
+  tableHeader: [
+    { title: 'Team', key: 'team' },
+    { title: 'P', key: 'played' },
+    { title: 'W', key: 'won' },
+    { title: 'D', key: 'drawn' },
+    { title: 'L', key: 'lost' },
+    { title: 'Pts', key: 'points' },
+  ],
+  standings: [
+    { name: 'Teaasdasdaddm 1', played: 3, won: 2, drawn: 1, lost: 0, points: 7 },
+    { name: 'Team 2', played: 3, won: 2, drawn: 0, lost: 1, points: 6 },
+    { name: 'Team 3', played: 3, won: 1, drawn: 2, lost: 0, points: 5 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+  ],
+}
 
 export const PremierLeagueComponent = () => {
   return (
@@ -11,120 +43,75 @@ export const PremierLeagueComponent = () => {
         <CardHeader className='bg-primary h-full'>
           <CardTitle className='text-background'>Premier League</CardTitle>
         </CardHeader>
-        {/* Add team section */}
-        <div className='mx-2'>
-          <div className='rounded-md bg-gray-100 px-2 py-4'>
-            <p className='text-xs mb-2 font-semibold'>Add Team</p>
-            <div className='flex gap-2'>
-              <Input
-                className='h-6 text-sm placeholder:text-sm bg-background'
-                placeholder='Team Name'
-              />
-              <button className='rounded-md bg-secondary px-3 text-background h-6 text-sm'>
-                Add
-              </button>
+        <div className='grid lg:grid-cols-6 gap-2 md:flex-row'>
+          {/* Add team section */}
+          <div className='col-span-2 mx-2'>
+            <div className='w-full rounded-md bg-card-muted px-2 py-4'>
+              <p className='text-xs mb-2 font-semibold'>Add Team</p>
+              <div className='flex gap-2'>
+                <Input id='team-name' inputSize='sm' placeholder='Team Name' />
+                <Button variant='secondary' size='sm' className='w-auto'>
+                  Add
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Add Score Section */}
-        <div className='mx-2 mb-4'>
-          <div className='rounded-md bg-gray-100 px-2 py-4'>
-            <div className='flex flex-col gap-2'>
-              <p className='text-xs font-semibold'>Add Score</p>
-              {/* SELECT TEAM */}
-              <div className='flex gap-2'>
-                {/* HOME TEAM */}
-                <div className='w-full'>
-                  <select className=' h-6 w-full text-sm placeholder:text-sm bg-background border border-foreground/10 rounded-md px-2'>
-                    <option value='default'>Home team</option>
-                    <option value='team1'>Team 1</option>
-                    <option value='team2'>Team 2</option>
-                    <option value='team3'>Team 3</option>
-                  </select>
-                </div>
+          {/* Add Score Section */}
+          <div className='col-span-2 mx-2 mb-4 '>
+            <div className='flex flex-col w-full gap-2 rounded-md  bg-card-muted px-2 py-4'>
+              <div className='flex flex-col gap-2'>
+                <p className='text-xs font-semibold'>Add Score</p>
 
-                {/* AWAY TEAM */}
-                <div className='w-full'>
-                  <select className=' h-6 w-full text-sm placeholder:text-sm bg-background border border-foreground/10 rounded-md px-2'>
-                    <option value='default'>Away team</option>
-                    <option value='team1'>Team 1</option>
-                    <option value='team2'>Team 2</option>
-                    <option value='team3'>Team 3</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* ENTER SCORE */}
-
-              <div>
-                {/* HOME TEAM */}
+                {/* SELECT TEAM */}
                 <div className='flex gap-2'>
+                  {/* HOME TEAM */}
                   <div className='w-full'>
-                    <Input
-                      className='h-6 text-sm placeholder:text-sm bg-background'
-                      placeholder='Team Name'
-                    />
+                    <SelectEntity size='sm' placeholder='Home team' options={teams} />
                   </div>
 
                   {/* AWAY TEAM */}
                   <div className='w-full'>
-                    <Input
-                      className='h-6 text-sm placeholder:text-sm bg-background'
-                      placeholder='Team Name'
-                    />
+                    <SelectEntity size='sm' placeholder='Away team' options={teams} />
+                  </div>
+                </div>
+
+                {/* ENTER SCORE */}
+
+                <div>
+                  {/* HOME TEAM */}
+                  <div className='flex gap-2'>
+                    <div className='w-full'>
+                      <Input
+                        inputSize='sm'
+                        className='placeholder:text-sm'
+                        placeholder='Home Score'
+                      />
+                    </div>
+
+                    {/* AWAY TEAM */}
+                    <div className='w-full'>
+                      <Input
+                        inputSize='sm'
+                        className='placeholder:text-sm'
+                        placeholder='Away Score'
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
+              <div className='w-full'>
+                <Button variant='secondary' size='sm'>
+                  Add Score
+                </Button>
+              </div>
             </div>
           </div>
-          <div className='w-full'>
-            <button className='w-full rounded-md bg-secondary px-3 text-background h-6 text-sm'>
-              Add Score
-            </button>
-          </div>
-        </div>
 
-        {/* STANDINGS TABLE */}
-        <div className='mx-2 mb-4'>
-          <table className='w-full'>
-            <thead className='flex bg-gray-200 border-b border-gray-300 px-2'>
-              <tr className='flex w-full'>
-                <th className='flex-1 text-start'>Team</th>
-                <th className='w-10'>P</th>
-                <th className='w-10'>W</th>
-                <th className='w-10'>D</th>
-                <th className='w-10'>L</th>
-                <th className='w-10'>Pts</th>
-              </tr>
-            </thead>
-            <tbody className='flex flex-col gap-2 mt-2 px-2'>
-              <tr className='flex w-full border-b border-gray-300'>
-                <td className='flex-1'>Team 1</td>
-                <td className='w-10 text-center'>10</td>
-                <td className='w-10 text-center'>8</td>
-                <td className='w-10 text-center'>1</td>
-                <td className='w-10 text-center'>1</td>
-                <td className='w-10 text-center'>25</td>
-              </tr>
-              <tr className='flex w-full border-b border-gray-300'>
-                <td className='flex-1'>Team 2</td>
-                <td className='w-10 text-center'>10</td>
-                <td className='w-10 text-center'>7</td>
-                <td className='w-10 text-center'>2</td>
-                <td className='w-10 text-center'>1</td>
-                <td className='w-10 text-center'>23</td>
-              </tr>
-              <tr className='flex w-full border-b border-gray-300'>
-                <td className='flex-1'>Team 3</td>
-                <td className='w-10 text-center'>10</td>
-                <td className='w-10 text-center'>6</td>
-                <td className='w-10 text-center'>3</td>
-                <td className='w-10 text-center'>1</td>
-                <td className='w-10 text-center'>21</td>
-              </tr>
-            </tbody>
-          </table>
+          {/* STANDINGS TABLE */}
+          <div className='col-span-2 mx-2 mb-4'>
+            <StandingsTable tableData={tableData} />
+          </div>
         </div>
       </Card>
     </SectionWrapper>
