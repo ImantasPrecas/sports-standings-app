@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write # 👈 allow pushing to gh-pages branch
+  pages: write # (optional, for pages specific actions)
+  id-token: write # (optional, for OIDC deployments)
+
 jobs:
   build:
     name: Build
