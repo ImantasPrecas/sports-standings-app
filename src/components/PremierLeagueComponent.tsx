@@ -15,24 +15,24 @@ const teams = [
 
 const tableData = {
   tableHeader: [
-    { title: 'Team', key: 'team' },
-    { title: 'P', key: 'played' },
+    { title: 'Team', key: 'name' },
+    { title: 'P', key: 'matches' },
     { title: 'W', key: 'won' },
     { title: 'D', key: 'drawn' },
     { title: 'L', key: 'lost' },
     { title: 'Pts', key: 'points' },
   ],
   standings: [
-    { name: 'Teaasdasdaddm 1', played: 3, won: 2, drawn: 1, lost: 0, points: 7 },
-    { name: 'Team 2', played: 3, won: 2, drawn: 0, lost: 1, points: 6 },
-    { name: 'Team 3', played: 3, won: 1, drawn: 2, lost: 0, points: 5 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Teaasdasdaddm 1', matches: 3, won: 2, drawn: 1, lost: 0, points: 7 },
+    { name: 'Team 2', matches: 3, won: 2, drawn: 0, lost: 1, points: 6 },
+    { name: 'Team 3', matches: 3, won: 1, drawn: 2, lost: 0, points: 5 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
   ],
 }
 
@@ -40,8 +40,8 @@ export const PremierLeagueComponent = () => {
   return (
     <SectionWrapper className='theme-design-1'>
       <Card>
-        <CardHeader className='bg-secondary h-full'>
-          <CardTitle className='text-primary'>Premier League</CardTitle>
+        <CardHeader className='bg-primary h-full'>
+          <CardTitle className='text-primary-foreground'>Premier League</CardTitle>
         </CardHeader>
         <div className='grid lg:grid-cols-6 gap-2 md:flex-row'>
           {/* Add team section */}
@@ -110,7 +110,7 @@ export const PremierLeagueComponent = () => {
 
           {/* STANDINGS TABLE */}
           <div className='col-span-2 mx-2 mb-4'>
-            <StandingsTable tableData={tableData}/>
+            <StandingsTable tableData={tableData} />
           </div>
         </div>
       </Card>

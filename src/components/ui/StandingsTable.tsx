@@ -1,14 +1,19 @@
+import type { JSX } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './Table'
 
 interface StandingsTableProps {
   tableData: {
     standings: {
       name: string
-      played: number
-      won: number
-      drawn: number
-      lost: number
-      points: number
+      matches?: number
+      won?: number
+      drawn?: number
+      lost?: number
+      points?: number
+      icons?: {
+        won?: JSX.Element
+        lost?: JSX.Element
+      }
     }[]
     tableHeader: { title: string; key: string }[]
   }
@@ -24,10 +29,10 @@ export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
             {tableData.tableHeader[0].title}
           </TableHead>
           {tableData.tableHeader
-            .filter((header) => header.key !== 'team')
+            .filter((header) => header.key !== 'name')
             .map((header) => (
               <TableHead
-                className='flex items-center justify-center min-w-10 '
+                className={'flex items-center justify-center min-w-[40px]'}
                 key={header.key}
               >
                 {header.title}
@@ -37,13 +42,37 @@ export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
       </TableHeader>
       <TableBody className='w-full max-h-42 overflow-y-auto block'>
         {tableData.standings.map((team) => (
-          <TableRow key={team.name} className='flex w-full text-foreground' rowLine={rowLine}>
+          <TableRow
+            key={team.name}
+            className='flex w-full text-foreground'
+            rowLine={rowLine}
+          >
             <TableCell className='flex-1'>{team.name}</TableCell>
-            <TableCell className='min-w-10 text-center'>{team.played}</TableCell>
-            <TableCell className='min-w-10 text-center'>{team.won}</TableCell>
-            <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
-            <TableCell className='min-w-10 text-center'>{team.lost}</TableCell>
-            <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
+            {team.matches !== undefined && (
+              <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
+            )}
+            {team.won !== undefined && (
+              <TableCell className='min-w-10 text-center'>
+                <p className='flex items-center justify-center gap-1'>
+                  {team.won}
+                  <span> {team.icons?.won}</span>
+                </p>
+              </TableCell>
+            )}
+            {team.drawn !== undefined && (
+              <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
+            )}
+            {team.lost !== undefined && (
+              <TableCell className='min-w-10 text-center'>
+                <p className='flex items-center justify-center gap-1'>
+                  {team.lost}
+                  <span> {team.icons?.lost}</span>
+                </p>
+              </TableCell>
+            )}
+            {team.points !== undefined && (
+              <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>
