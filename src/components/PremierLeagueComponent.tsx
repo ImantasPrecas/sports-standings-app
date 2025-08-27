@@ -38,10 +38,10 @@ const tableData = {
 
 export const PremierLeagueComponent = () => {
   return (
-    <SectionWrapper className='theme-design1'>
+    <SectionWrapper className='theme-design-1'>
       <Card>
-        <CardHeader className='bg-primary h-full'>
-          <CardTitle className='text-background'>Premier League</CardTitle>
+        <CardHeader className='bg-secondary h-full'>
+          <CardTitle className='text-primary'>Premier League</CardTitle>
         </CardHeader>
         <div className='grid lg:grid-cols-6 gap-2 md:flex-row'>
           {/* Add team section */}
@@ -110,7 +110,7 @@ export const PremierLeagueComponent = () => {
 
           {/* STANDINGS TABLE */}
           <div className='col-span-2 mx-2 mb-4'>
-            <StandingsTable tableData={tableData} />
+            <StandingsTable tableData={tableData}/>
           </div>
         </div>
       </Card>
