@@ -29,34 +29,34 @@ const playedMatches = [
 
 const tableData = {
   tableHeader: [
-    { title: 'Team', key: 'team' },
-    { title: 'P', key: 'played' },
+    { title: 'Team', key: 'name' },
+    { title: 'P', key: 'matches' },
     { title: 'W', key: 'won' },
     { title: 'D', key: 'drawn' },
     { title: 'L', key: 'lost' },
     { title: 'Pts', key: 'points' },
   ],
   standings: [
-    { name: '🇱🇹 Team 1', played: 3, won: 2, drawn: 1, lost: 0, points: 7 },
-    { name: '🇱🇹 Team 2', played: 3, won: 2, drawn: 0, lost: 1, points: 6 },
-    { name: '🇫🇷 Team 3', played: 3, won: 1, drawn: 2, lost: 0, points: 5 },
-    { name: '🇩🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: '🇪🇪 Team 5', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: '🇪🇪 Team 6', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: '🇪🇪 Team 7', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: '🇪🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: '🇪🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: '🇪🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇱🇹 Team 1', matches: 3, won: 2, drawn: 1, lost: 0, points: 7 },
+    { name: '🇱🇹 Team 2', matches: 3, won: 2, drawn: 0, lost: 1, points: 6 },
+    { name: '🇫🇷 Team 3', matches: 3, won: 1, drawn: 2, lost: 0, points: 5 },
+    { name: '🇩🇪 Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 5', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 6', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 7', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
   ],
 }
 
 export const EurobasketComponent = () => {
   return (
     <SectionWrapper className='theme-design-2'>
-      <Card className='bg-secondary'>
+      <Card className='bg-primary'>
         {/* Header */}
-        <CardHeader className='bg-secondary h-full'>
-          <CardTitle className='flex align-center text-primary gap-4'>
+        <CardHeader className='bg-primary h-full'>
+          <CardTitle className='flex align-center text-primary-foreground gap-4'>
             <img
               src='/src/assets/basketball-ball.svg'
               alt='Basketball'
@@ -65,7 +65,7 @@ export const EurobasketComponent = () => {
             <p>EUROBASKET</p>
           </CardTitle>
         </CardHeader>
-        <div className='grid lg:grid-cols-6 gap-2 bg-secondary'>
+        <div className='grid lg:grid-cols-6 gap-2 bg-primary'>
           {/* ADD Buttons */}
           <div className='col-span-2 mx-2'>
             <div className='w-full rounded-md px-2'>
@@ -87,7 +87,7 @@ export const EurobasketComponent = () => {
             >
               <div className='flex gap-2'>
                 <Input id='team-name' inputSize='sm' placeholder='Team Name' />
-                <Button variant='secondary' size='sm' className='w-auto'>
+                <Button variant='primary' size='sm' className='w-auto'>
                   Add
                 </Button>
               </div>
@@ -96,7 +96,7 @@ export const EurobasketComponent = () => {
 
           {/* HIDDEN ADD SCORE INPUTS */}
           <div className='col-span-2 mx-6 mb-4 hidden'>
-            <div className='flex flex-col w-full gap-2 rounded-md  bg-secondary px-2 py-4'>
+            <div className='flex flex-col w-full gap-2 rounded-md  bg-primary px-2 py-4'>
               <div className='flex flex-col gap-2'>
                 {/* SELECT TEAM */}
                 <div className='flex gap-2'>
@@ -136,7 +136,7 @@ export const EurobasketComponent = () => {
                 </div>
               </div>
               <div className='w-full'>
-                <Button variant='secondary' size='sm'>
+                <Button variant='primary' size='sm'>
                   Add Score
                 </Button>
               </div>
@@ -144,12 +144,12 @@ export const EurobasketComponent = () => {
           </div>
           {/* PLAYED MATCHES */}
           <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0'>
-            <div className='flex flex-col text-primary'>
+            <div className='flex flex-col text-primary-foreground'>
               {/* Map through played matches data */}
               <ul className='flex flex-col'>
                 {playedMatches.map((match, index, array) => (
                   <div key={index} className='space-y-2'>
-                    <li className='flex justify-between bg-secondary rounded-md'>
+                    <li className='flex justify-between bg-primary rounded-md'>
                       <p className='flex gap-2 text-sm'>
                         <span>{match.homeTeam}</span> vs <span>{match.awayTeam}</span>
                       </p>

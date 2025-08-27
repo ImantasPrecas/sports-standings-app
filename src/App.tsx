@@ -1,5 +1,6 @@
 import { EurobasketComponent } from './components/EurobasketComponent'
 import { PremierLeagueComponent } from './components/PremierLeagueComponent'
+import { WimbledonComponent } from './components/WimbledonComponent'
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         </header>
         <PremierLeagueComponent />
         <EurobasketComponent />
+        <WimbledonComponent />
       </main>
     </>
   )
