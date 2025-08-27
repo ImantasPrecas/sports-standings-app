@@ -12,13 +12,14 @@ interface StandingsTableProps {
     }[]
     tableHeader: { title: string; key: string }[]
   }
+  rowLine?: boolean
 }
 
-export const StandingsTable = ({ tableData }: StandingsTableProps) => {
+export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
   return (
     <Table className='flex-col'>
       <TableHeader className='flex w-full'>
-        <TableRow className='flex w-full'>
+        <TableRow className='flex w-full' rowLine={rowLine}>
           <TableHead className='flex flex-1 justify-start items-center'>
             {tableData.tableHeader[0].title}
           </TableHead>
@@ -36,7 +37,7 @@ export const StandingsTable = ({ tableData }: StandingsTableProps) => {
       </TableHeader>
       <TableBody className='w-full max-h-42 overflow-y-auto block'>
         {tableData.standings.map((team) => (
-          <TableRow key={team.name} className='flex w-full'>
+          <TableRow key={team.name} className='flex w-full text-foreground' rowLine={rowLine}>
             <TableCell className='flex-1'>{team.name}</TableCell>
             <TableCell className='min-w-10 text-center'>{team.played}</TableCell>
             <TableCell className='min-w-10 text-center'>{team.won}</TableCell>

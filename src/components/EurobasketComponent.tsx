@@ -6,6 +6,14 @@ import { CardTitle } from './ui/CardTitle'
 import { SectionWrapper } from './ui/SectionWrapper'
 import { Input } from './ui/Input'
 import { SelectEntity } from './ui/SelectEntity'
+import { StandingsTable } from './ui/StandingsTable'
+
+// *
+//  For the country selection and flag mapping use
+//  react-select-country-list + react-select + react-country-flag
+//  https://www.npmjs.com/package/react-select-country-list
+//  https://www.npmjs.com/package/react-country-flag
+// *
 
 const teams = [
   { name: 'Team 1', value: 'team1' },
@@ -19,28 +27,28 @@ const playedMatches = [
   { homeTeam: '🇪🇪 Team 2', awayTeam: '🇫🇷 Team 3', homeScore: 78, awayScore: 88 },
 ]
 
-// const tableData = {
-//   tableHeader: [
-//     { title: 'Team', key: 'team' },
-//     { title: 'P', key: 'played' },
-//     { title: 'W', key: 'won' },
-//     { title: 'D', key: 'drawn' },
-//     { title: 'L', key: 'lost' },
-//     { title: 'Pts', key: 'points' },
-//   ],
-//   standings: [
-//     { name: 'Teaasdasdaddm 1', played: 3, won: 2, drawn: 1, lost: 0, points: 7 },
-//     { name: 'Team 2', played: 3, won: 2, drawn: 0, lost: 1, points: 6 },
-//     { name: 'Team 3', played: 3, won: 1, drawn: 2, lost: 0, points: 5 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//     { name: 'Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-//   ],
-// }
+const tableData = {
+  tableHeader: [
+    { title: 'Team', key: 'team' },
+    { title: 'P', key: 'played' },
+    { title: 'W', key: 'won' },
+    { title: 'D', key: 'drawn' },
+    { title: 'L', key: 'lost' },
+    { title: 'Pts', key: 'points' },
+  ],
+  standings: [
+    { name: '🇱🇹 Team 1', played: 3, won: 2, drawn: 1, lost: 0, points: 7 },
+    { name: '🇱🇹 Team 2', played: 3, won: 2, drawn: 0, lost: 1, points: 6 },
+    { name: '🇫🇷 Team 3', played: 3, won: 1, drawn: 2, lost: 0, points: 5 },
+    { name: '🇩🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 5', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 6', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 7', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+    { name: '🇪🇪 Team 4', played: 3, won: 1, drawn: 1, lost: 1, points: 4 },
+  ],
+}
 
 export const EurobasketComponent = () => {
   return (
@@ -72,7 +80,6 @@ export const EurobasketComponent = () => {
             </div>
           </div>
           {/* HIDDEN ADD TEAM INPUTS */}
-
           <div className='col-span-2 mx-6 hidden'>
             <div
               className='w-full rounded-md 
@@ -139,24 +146,29 @@ export const EurobasketComponent = () => {
           <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0'>
             <div className='flex flex-col text-primary'>
               {/* Map through played matches data */}
-                <ul className="flex flex-col">
+              <ul className='flex flex-col'>
                 {playedMatches.map((match, index, array) => (
                   <div key={index} className='space-y-2'>
-                  <li className='flex justify-between bg-secondary rounded-md'>
-                    <p className='flex gap-2 text-sm'>
-                    <span>{match.homeTeam}</span> vs <span>{match.awayTeam}</span>
-                    </p>
-                    <p className='text-sm'>{match.homeScore} - {match.awayScore}</p>
-                  </li>
-                  {index < array.length - 1 && (
-                    <div className="h-[0.5px] bg-primary-foreground dark:bg-gray-700 mb-1 mx-2" />
-                  )}
+                    <li className='flex justify-between bg-secondary rounded-md'>
+                      <p className='flex gap-2 text-sm'>
+                        <span>{match.homeTeam}</span> vs <span>{match.awayTeam}</span>
+                      </p>
+                      <p className='text-sm'>
+                        {match.homeScore} - {match.awayScore}
+                      </p>
+                    </li>
+                    {index < array.length - 1 && (
+                      <div className='h-[0.5px] bg-primary-foreground dark:bg-gray-700 mb-4 mx-2' />
+                    )}
                   </div>
                 ))}
-                </ul>
+              </ul>
             </div>
           </div>
           {/* SCORE TABLE */}
+          <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0 pb-10'>
+            <StandingsTable tableData={tableData} rowLine={false} />
+          </div>
         </div>
       </Card>
     </SectionWrapper>

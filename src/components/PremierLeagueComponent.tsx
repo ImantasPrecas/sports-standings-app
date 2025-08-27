@@ -110,7 +110,7 @@ export const PremierLeagueComponent = () => {
 
           {/* STANDINGS TABLE */}
           <div className='col-span-2 mx-2 mb-4'>
-            <StandingsTable tableData={tableData} />
+            <StandingsTable tableData={tableData}/>
           </div>
         </div>
       </Card>
