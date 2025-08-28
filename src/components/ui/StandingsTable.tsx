@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from './Table'
-import type { IStandingsTable } from '@/store/premierLeagueSlice'
+import type { IStandingsTable } from '@/store/premierLeagueStore'
 
 interface StandingsTableProps {
   tableData: IStandingsTable

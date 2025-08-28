@@ -6,11 +6,13 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { SelectEntity } from '@/components/ui/SelectEntity'
 import { Button } from './ui/Button'
 import { StandingsTable } from './ui/StandingsTable'
-import useAppStore from '@/store/appStore'
+
 import { useState } from 'react'
+import UsePremierLeagueStore from '@/store/premierLeagueStore'
 
 export const PremierLeagueComponent = () => {
-  const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } = useAppStore()
+  const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
+    UsePremierLeagueStore()
   const [newTeamName, setNewTeamName] = useState('')
   const [selectedTeamA, setSelectedTeamA] = useState('')
   const [selectedTeamB, setSelectedTeamB] = useState('')
