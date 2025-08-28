@@ -26,7 +26,6 @@ export const PremierLeagueComponent = () => {
   const handleSubmitNewTeam = () => {
     addTeam(newTeamName.trim())
     setNewTeamName('')
-    console.log(standingsTable)
   }
 
   const handleSubmitScore = () => {
@@ -41,9 +40,7 @@ export const PremierLeagueComponent = () => {
         return
       }
       addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
-      console.log(
-        `Submitting score: ${selectedTeamA} ${teamAScore} - ${teamBScore} ${selectedTeamB}`
-      )
+
       resetInputs()
     } else {
       setError('Please enter valid scores and select both teams.')
@@ -146,7 +143,7 @@ export const PremierLeagueComponent = () => {
                   <div className='flex gap-2'>
                     <div className='w-full'>
                       <Input
-                        id='home-score'
+                        id='prem-home-score'
                         value={teamAScore}
                         onChange={(e) => setTeamAScore(e.target.value)}
                         placeholder='Home Score'
@@ -159,7 +156,7 @@ export const PremierLeagueComponent = () => {
                     {/* AWAY TEAM */}
                     <div className='w-full'>
                       <Input
-                        id='away-score'
+                        id='prem-away-score'
                         value={teamBScore}
                         onChange={(e) => setTeamBScore(e.target.value)}
                         placeholder='Away Score'

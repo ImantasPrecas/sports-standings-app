@@ -36,7 +36,7 @@ const UseEurobasketStore = create<IEurobasketStore>()(
               state.standings[id] = {
                 teamId: id,
                 name,
-                matches: 0,
+                // matches: 0,
                 won: 0,
                 drawn: 0,
                 lost: 0,
@@ -55,7 +55,7 @@ const UseEurobasketStore = create<IEurobasketStore>()(
             return {
               tableHeader: [
                 { title: 'Team', key: 'name' },
-                { title: 'P', key: 'matches' },
+                // { title: 'P', key: 'matches' },
                 { title: 'W', key: 'won' },
                 { title: 'D', key: 'drawn' },
                 { title: 'L', key: 'lost' },
@@ -83,7 +83,7 @@ const UseEurobasketStore = create<IEurobasketStore>()(
 
             const updateTeamStats = (teamId: string, result: string) => {
               const teamStats = get().standings[teamId]
-              const matches = teamStats.matches + 1
+              // const matches = teamStats.matches + 1
               let won = teamStats.won
               let drawn = teamStats.drawn
               let lost = teamStats.lost
@@ -101,7 +101,7 @@ const UseEurobasketStore = create<IEurobasketStore>()(
 
               return {
                 teamId,
-                matches,
+                // matches,
                 won,
                 drawn,
                 lost,

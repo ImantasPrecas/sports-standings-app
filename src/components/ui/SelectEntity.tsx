@@ -9,7 +9,7 @@ export const SelectEntity = ({
 }: {
   size: 'sm' | 'default' | 'lg'
   placeholder: string
-  options: { id: string; name: string }[]
+  options: { id: string; name: string; flag?: string }[]
   value: string
   onSelect: (id: string) => void
 }) => {
@@ -26,7 +26,7 @@ export const SelectEntity = ({
             <SelectItem
               key={option.id}
               value={option.id}
-              className='p-2 hover:bg-gray-100 cursor-pointer'
+              className='flex p-2 hover:bg-gray-100 cursor-pointer'
             >
               {option.name}
             </SelectItem>

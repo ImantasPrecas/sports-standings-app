@@ -3,7 +3,7 @@ import type { JSX } from 'react'
 export interface IStandingEntry {
   teamId: string
   name: string
-  matches: number
+  matches?: number
   won: number
   drawn: number
   lost: number

@@ -1,3 +1,4 @@
+import type { IStandingsTable } from '@/interfaces/interface'
 import {
   Table,
   TableBody,
@@ -7,14 +8,16 @@ import {
   TableHeader,
   TableRow,
 } from './Table'
-import type { IStandingsTable } from '@/store/premierLeagueStore'
+import ReactCountryFlag from 'react-country-flag'
+import countryList from 'react-select-country-list'
 
 interface StandingsTableProps {
   tableData: IStandingsTable
   rowLine?: boolean
+  withFlag?: boolean
 }
 
-export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
+export const StandingsTable = ({ tableData, rowLine, withFlag }: StandingsTableProps) => {
   return (
     <Table className='flex-col'>
       <TableHeader className='flex w-full'>
@@ -29,7 +32,7 @@ export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
                 className={'flex items-center justify-center min-w-[40px]'}
                 key={header.key}
               >
-                {header.title}
+                <p>{header.title}</p>
               </TableHead>
             ))}
         </TableRow>
@@ -42,7 +45,15 @@ export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
               className='flex w-full text-foreground'
               rowLine={rowLine}
             >
-              <TableCell className='flex-1'>{team.name}</TableCell>
+              <TableCell className='flex flex-1 items-center'>
+                {withFlag && (
+                  <ReactCountryFlag
+                    className='mr-2'
+                    countryCode={countryList().getValue(team.teamId)}
+                  />
+                )}
+                <p>{team.name}</p>
+              </TableCell>
               {team.matches !== undefined && (
                 <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
               )}
