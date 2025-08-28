@@ -81,12 +81,20 @@ const UsePremierLeagueStore = create<IPremierLeagueSlice>()(
             }
 
             const updateTeamStats = (teamId: string, result: string) => {
-              const teamStats = get().standings[teamId]
-              const matches = teamStats.matches + 1
-              let won = teamStats.won
-              let drawn = teamStats.drawn
-              let lost = teamStats.lost
-              let points = teamStats.points
+              const teamStats = get().standings[teamId] || {
+                teamId,
+                name: get().teams[teamId]?.name || '',
+                matches: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                points: 0,
+              }
+              const matches = (teamStats.matches || 0) + 1
+              let won = teamStats.won || 0
+              let drawn = teamStats.drawn || 0
+              let lost = teamStats.lost || 0
+              let points = teamStats.points || 0
 
               if (result === 'win') {
                 won += 1

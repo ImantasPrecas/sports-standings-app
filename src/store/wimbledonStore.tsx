@@ -8,45 +8,46 @@ interface Team {
   name: string
 }
 
-export interface IEurobasketStore {
-  teams: Record<string, Team>
+export interface IWimbledonStore {
+  players: Record<string, Team>
   standings: Record<string, IStandingEntry>
   matches: Record<string, IMatch>
-  addTeam: (name: string) => void
-  getTeamsList: () => { id: string; name: string }[]
+  addPlayer: (name: string) => void
+  getPlayersList: () => { id: string; name: string }[]
   getStandingsTable: () => IStandingsTable
-  addMatch: (teamA: string, teamB: string, scoreA: number, scoreB: number) => void
+  addMatch: (playerA: string, playerB: string, scoreA: number, scoreB: number) => void
   getMatches: () => IMatch[]
 }
 
-const UseEurobasketStore = create<IEurobasketStore>()(
+const useWimbledonStore = create<IWimbledonStore>()(
   devtools(
     immer(
       persist(
         (set, get) => ({
-          // Initial teams and standings for development
-          teams: {},
+          players: {},
           standings: {},
           matches: {},
           duplicatedMatch: false,
-          addTeam: (name: string) => {
+          addPlayer: (name: string) => {
             const id = name.toLowerCase().replace(/\s+/g, '-')
             set((state) => {
-              state.teams[id] = { id, name }
+              state.players[id] = { id, name }
               state.standings[id] = {
-                teamId: id,
+                playerId: id,
                 name,
-                // matches: 0,
+                matches: 0,
                 won: 0,
-                drawn: 0,
                 lost: 0,
                 points: 0,
               }
             })
           },
-          getTeamsList: () => {
-            const { teams } = get()
-            return Object.entries(teams).map(([id, team]) => ({ id, name: team.name }))
+          getPlayersList: () => {
+            const { players } = get()
+            return Object.entries(players).map(([id, player]) => ({
+              id,
+              name: player.name,
+            }))
           },
           getStandingsTable: () => {
             const standings = Object.values(get().standings).sort(
@@ -54,9 +55,9 @@ const UseEurobasketStore = create<IEurobasketStore>()(
             )
             return {
               tableHeader: [
-                { title: 'Team', key: 'name' },
+                { title: 'Player', key: 'name' },
+                { title: 'M', key: 'matches' },
                 { title: 'W', key: 'won' },
-                { title: 'D', key: 'drawn' },
                 { title: 'L', key: 'lost' },
                 { title: 'Pts', key: 'points' },
               ],
@@ -80,46 +81,52 @@ const UseEurobasketStore = create<IEurobasketStore>()(
               resultB = 'win'
             }
 
-            const updateTeamStats = (teamId: string, result: string) => {
-              const teamStats = get().standings[teamId]
-              let won = teamStats.won
-              let drawn = teamStats.drawn
-              let lost = teamStats.lost
-              let points = teamStats.points
+            const updatePlayerStats = (playerId: string, result: string) => {
+              const playerStats = get().standings[playerId] || {
+                playerId,
+                name: get().players[playerId]?.name || '',
+                matches: 0,
+                won: 0,
+                lost: 0,
+                points: 0,
+              }
+              const matches = (playerStats.matches || 0) + 1
+              let won = playerStats.won || 0
+              let lost = playerStats.lost || 0
+              let points = playerStats.points || 0
 
               if (result === 'win') {
                 won += 1
                 points += 3
               } else if (result === 'draw') {
-                drawn += 1
                 points += 1
               } else if (result === 'loss') {
                 lost += 1
               }
 
               return {
-                teamId,
+                playerId,
+                matches,
                 won,
-                drawn,
                 lost,
                 points,
-                name: teamStats.name,
+                name: playerStats.name,
               }
             }
 
             set((state) => {
-              state.standings[teamA] = updateTeamStats(teamA, resultA)
-              state.standings[teamB] = updateTeamStats(teamB, resultB)
+              state.standings[teamA] = updatePlayerStats(teamA, resultA)
+              state.standings[teamB] = updatePlayerStats(teamB, resultB)
             })
           },
           getMatches: () => {
             return Object.values(get().matches)
           },
         }),
-        { name: 'eurobasket' }
+        { name: 'wimbledon' }
       )
     )
   )
 )
 
-export default UseEurobasketStore
+export default useWimbledonStore

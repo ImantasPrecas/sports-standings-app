@@ -68,6 +68,7 @@ export const EurobasketComponent = () => {
     const regex = /^[0-9]+$/
     return regex.test(value)
   }
+
   const resetInputs = () => {
     setSelectedCountry('')
     setSelectedTeamA('')
@@ -238,8 +239,8 @@ export const EurobasketComponent = () => {
               {/* Map through played matches data */}
               <ul className='flex flex-col'>
                 {matches.map((match, index, array) => {
-                  const teamAFlag = countryList().getValue(match.teamA)
-                  const teamBFlag = countryList().getValue(match.teamB)
+                  const teamAFlag = countryList().getValue(match.teamA!)
+                  const teamBFlag = countryList().getValue(match.teamB!)
                   return (
                     <div key={index} className='space-y-2'>
                       <li className='flex justify-between bg-primary rounded-md'>
