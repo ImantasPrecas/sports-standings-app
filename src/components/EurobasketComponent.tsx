@@ -7,6 +7,7 @@ import { SectionWrapper } from './ui/SectionWrapper'
 import { Input } from './ui/Input'
 import { SelectEntity } from './ui/SelectEntity'
 import { StandingsTable } from './ui/StandingsTable'
+import basketBall from '../assets/basketball-ball.svg'
 
 // *
 //  For the country selection and flag mapping use
@@ -58,7 +59,7 @@ export const EurobasketComponent = () => {
         <CardHeader className='bg-primary h-full'>
           <CardTitle className='flex align-center text-primary-foreground gap-4'>
             <img
-              src='/src/assets/basketball-ball.svg'
+              src={basketBall}
               alt='Basketball'
               className='h-6 my-auto inline-block filter brightness-0 invert'
             />

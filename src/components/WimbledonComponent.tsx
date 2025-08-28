@@ -5,6 +5,7 @@ import { CardHeader } from './ui/CardHeader'
 import { CardTitle } from './ui/CardTitle'
 import { SectionWrapper } from './ui/SectionWrapper'
 import { StandingsTable } from './ui/StandingsTable'
+import tenisBallIcon from '../assets/tenisBall.svg'
 
 const tableData = {
   tableHeader: [
@@ -69,8 +70,8 @@ export const WimbledonComponent = () => {
         <CardHeader className='bg-primary h-full'>
           <CardTitle className='flex align-center text-primary-foreground gap-4'>
             <img
-              src='/src/assets/tenisBall.svg'
-              alt='Basketball'
+              src={tenisBallIcon}
+              alt='tenisball'
               className='h-6 my-auto inline-block filter brightness-0 invert'
             />
             <p> Wimbledon</p>
