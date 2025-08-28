@@ -8,7 +8,7 @@ interface Team {
   name: string
 }
 
-export interface IPremierLeagueSlice {
+export interface IEurobasketStore {
   teams: Record<string, Team>
   standings: Record<string, IStandingEntry>
   matches: Record<string, IMatch>
@@ -19,11 +19,12 @@ export interface IPremierLeagueSlice {
   getMatches: () => IMatch[]
 }
 
-const UsePremierLeagueStore = create<IPremierLeagueSlice>()(
+const UseEurobasketStore = create<IEurobasketStore>()(
   devtools(
     immer(
       persist(
         (set, get) => ({
+          // Initial teams and standings for development
           teams: {},
           standings: {},
           matches: {},
@@ -118,10 +119,10 @@ const UsePremierLeagueStore = create<IPremierLeagueSlice>()(
             return Object.values(get().matches)
           },
         }),
-        { name: 'premier-league' }
+        { name: 'eurobasket' }
       )
     )
   )
 )
 
-export default UsePremierLeagueStore
+export default UseEurobasketStore
