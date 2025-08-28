@@ -1,5 +1,13 @@
 import type { JSX } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './Table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './Table'
 
 interface StandingsTableProps {
   tableData: {
@@ -40,42 +48,56 @@ export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
             ))}
         </TableRow>
       </TableHeader>
-      <TableBody className='w-full max-h-42 overflow-y-auto block'>
-        {tableData.standings.map((team) => (
-          <TableRow
-            key={team.name}
-            className='flex w-full text-foreground'
-            rowLine={rowLine}
-          >
-            <TableCell className='flex-1'>{team.name}</TableCell>
-            {team.matches !== undefined && (
-              <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
-            )}
-            {team.won !== undefined && (
-              <TableCell className='min-w-10 text-center'>
-                <p className='flex items-center justify-center gap-1'>
-                  {team.won}
-                  <span> {team.icons?.won}</span>
-                </p>
-              </TableCell>
-            )}
-            {team.drawn !== undefined && (
-              <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
-            )}
-            {team.lost !== undefined && (
-              <TableCell className='min-w-10 text-center'>
-                <p className='flex items-center justify-center gap-1'>
-                  {team.lost}
-                  <span> {team.icons?.lost}</span>
-                </p>
-              </TableCell>
-            )}
-            {team.points !== undefined && (
-              <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
-            )}
+      {tableData.standings.length !== 0 && (
+        <TableBody className='w-full max-h-42 overflow-y-auto block'>
+          {tableData.standings.map((team) => (
+            <TableRow
+              key={team.name}
+              className='flex w-full text-foreground'
+              rowLine={rowLine}
+            >
+              <TableCell className='flex-1'>{team.name}</TableCell>
+              {team.matches !== undefined && (
+                <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
+              )}
+              {team.won !== undefined && (
+                <TableCell className='min-w-10 text-center'>
+                  <p className='flex items-center justify-center gap-1'>
+                    {team.won}
+                    <span> {team.icons?.won}</span>
+                  </p>
+                </TableCell>
+              )}
+              {team.drawn !== undefined && (
+                <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
+              )}
+              {team.lost !== undefined && (
+                <TableCell className='min-w-10 text-center'>
+                  <p className='flex items-center justify-center gap-1'>
+                    {team.lost}
+                    <span> {team.icons?.lost}</span>
+                  </p>
+                </TableCell>
+              )}
+              {team.points !== undefined && (
+                <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
+
+      {tableData.standings.length === 0 && (
+        <TableFooter>
+          <TableRow className='my-4'>
+            <TableHead>
+              <p className='text-sm font-normal text-center'>
+                No standings available. Add a team to get started.
+              </p>
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
+        </TableFooter>
+      )}
     </Table>
   )
 }

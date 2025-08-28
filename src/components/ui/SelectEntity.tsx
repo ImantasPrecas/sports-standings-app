@@ -7,7 +7,7 @@ export const SelectEntity = ({
 }: {
   size: 'sm' | 'default' | 'lg'
   placeholder: string
-  options: { name: string; value: string }[]
+  options: { id: string; name: string }[]
 }) => {
   return (
     <Select>
@@ -17,8 +17,8 @@ export const SelectEntity = ({
       <SelectContent>
         {options.map((option) => (
           <SelectItem
-            key={option.value}
-            value={option.value}
+            key={option.id}
+            value={option.id}
             className='p-2 hover:bg-gray-100 cursor-pointer'
           >
             {option.name}

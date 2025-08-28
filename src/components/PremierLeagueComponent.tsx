@@ -6,37 +6,21 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { SelectEntity } from '@/components/ui/SelectEntity'
 import { Button } from './ui/Button'
 import { StandingsTable } from './ui/StandingsTable'
-
-const teams = [
-  { name: 'Team 1', value: 'team1' },
-  { name: 'Team 2', value: 'team2' },
-  { name: 'Team 3', value: 'team3' },
-]
-
-const tableData = {
-  tableHeader: [
-    { title: 'Team', key: 'name' },
-    { title: 'P', key: 'matches' },
-    { title: 'W', key: 'won' },
-    { title: 'D', key: 'drawn' },
-    { title: 'L', key: 'lost' },
-    { title: 'Pts', key: 'points' },
-  ],
-  standings: [
-    { name: 'Teaasdasdaddm 1', matches: 3, won: 2, drawn: 1, lost: 0, points: 7 },
-    { name: 'Team 2', matches: 3, won: 2, drawn: 0, lost: 1, points: 6 },
-    { name: 'Team 3', matches: 3, won: 1, drawn: 2, lost: 0, points: 5 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-    { name: 'Team 4', matches: 3, won: 1, drawn: 1, lost: 1, points: 4 },
-  ],
-}
+import useAppStore from '@/store/appStore'
+import { useState } from 'react'
 
 export const PremierLeagueComponent = () => {
+  const { getTeamsList, addTeam, getStandingsTable } = useAppStore()
+  const [newTeamName, setNewTeamName] = useState('')
+
+  const standingsTable = getStandingsTable()
+  const teamsArray = getTeamsList()
+
+  const handleSubmitNewTeam = () => {
+    addTeam(newTeamName)
+    setNewTeamName('')
+  }
+
   return (
     <SectionWrapper className='theme-design-1'>
       <Card>
@@ -49,8 +33,20 @@ export const PremierLeagueComponent = () => {
             <div className='w-full rounded-md bg-card-muted px-2 py-4'>
               <p className='text-xs mb-2 font-semibold'>Add Team</p>
               <div className='flex gap-2'>
-                <Input id='team-name' inputSize='sm' placeholder='Team Name' />
-                <Button variant='secondary' size='sm' className='w-auto'>
+                <Input
+                  onChange={(e) => setNewTeamName(e.target.value)}
+                  value={newTeamName}
+                  id='team-name'
+                  inputSize='sm'
+                  placeholder='Team Name'
+                />
+                <Button
+                  type='submit'
+                  variant='secondary'
+                  size='sm'
+                  className='w-auto'
+                  onClick={handleSubmitNewTeam}
+                >
                   Add
                 </Button>
               </div>
@@ -67,12 +63,20 @@ export const PremierLeagueComponent = () => {
                 <div className='flex gap-2'>
                   {/* HOME TEAM */}
                   <div className='w-full'>
-                    <SelectEntity size='sm' placeholder='Home team' options={teams} />
+                    <SelectEntity
+                      size='sm'
+                      placeholder='Home team'
+                      options={teamsArray}
+                    />
                   </div>
 
                   {/* AWAY TEAM */}
                   <div className='w-full'>
-                    <SelectEntity size='sm' placeholder='Away team' options={teams} />
+                    <SelectEntity
+                      size='sm'
+                      placeholder='Away team'
+                      options={teamsArray}
+                    />
                   </div>
                 </div>
 
@@ -110,7 +114,7 @@ export const PremierLeagueComponent = () => {
 
           {/* STANDINGS TABLE */}
           <div className='col-span-2 mx-2 mb-4'>
-            <StandingsTable tableData={tableData} />
+            <StandingsTable tableData={standingsTable} />
           </div>
         </div>
       </Card>
