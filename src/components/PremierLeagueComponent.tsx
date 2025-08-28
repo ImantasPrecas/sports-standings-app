@@ -10,15 +10,63 @@ import useAppStore from '@/store/appStore'
 import { useState } from 'react'
 
 export const PremierLeagueComponent = () => {
-  const { getTeamsList, addTeam, getStandingsTable } = useAppStore()
+  const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } = useAppStore()
   const [newTeamName, setNewTeamName] = useState('')
+  const [selectedTeamA, setSelectedTeamA] = useState('')
+  const [selectedTeamB, setSelectedTeamB] = useState('')
+  const [teamAScore, setTeamAScore] = useState('')
+  const [teamBScore, setTeamBScore] = useState('')
+  const [error, setError] = useState('')
 
   const standingsTable = getStandingsTable()
-  const teamsArray = getTeamsList()
+  const teamsList = getTeamsList()
 
   const handleSubmitNewTeam = () => {
-    addTeam(newTeamName)
+    addTeam(newTeamName.trim())
     setNewTeamName('')
+    console.log(standingsTable)
+  }
+
+  const handleSubmitScore = () => {
+    if (
+      validateInput(teamAScore) &&
+      validateInput(teamBScore) &&
+      selectedTeamA &&
+      selectedTeamB
+    ) {
+      if (checkForDuplication(selectedTeamA, selectedTeamB)) {
+        setError('Teams already played against each other')
+        return
+      }
+      addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
+      console.log(
+        `Submitting score: ${selectedTeamA} ${teamAScore} - ${teamBScore} ${selectedTeamB}`
+      )
+      resetInputs()
+    } else {
+      setError('Please enter valid scores and select both teams.')
+    }
+  }
+
+  const validateInput = (value: string) => {
+    const regex = /^[0-9]+$/
+    return regex.test(value)
+  }
+  const resetInputs = () => {
+    setSelectedTeamA('')
+    setSelectedTeamB('')
+    setTeamAScore('')
+    setTeamBScore('')
+    setError('')
+  }
+
+  const checkForDuplication = (teamA: string, teamB: string) => {
+    const existingMatch = Object.values(getMatches()).find(
+      (match) =>
+        (match.teamA === teamA && match.teamB === teamB) ||
+        (match.teamA === teamB && match.teamB === teamA)
+    )
+    return !!existingMatch
   }
 
   return (
@@ -35,6 +83,11 @@ export const PremierLeagueComponent = () => {
               <div className='flex gap-2'>
                 <Input
                   onChange={(e) => setNewTeamName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSubmitNewTeam()
+                    }
+                  }}
                   value={newTeamName}
                   id='team-name'
                   inputSize='sm'
@@ -66,7 +119,9 @@ export const PremierLeagueComponent = () => {
                     <SelectEntity
                       size='sm'
                       placeholder='Home team'
-                      options={teamsArray}
+                      options={teamsList}
+                      value={selectedTeamA}
+                      onSelect={setSelectedTeamA}
                     />
                   </div>
 
@@ -75,7 +130,9 @@ export const PremierLeagueComponent = () => {
                     <SelectEntity
                       size='sm'
                       placeholder='Away team'
-                      options={teamsArray}
+                      options={teamsList}
+                      value={selectedTeamB}
+                      onSelect={setSelectedTeamB}
                     />
                   </div>
                 </div>
@@ -87,28 +144,37 @@ export const PremierLeagueComponent = () => {
                   <div className='flex gap-2'>
                     <div className='w-full'>
                       <Input
+                        id='home-score'
+                        value={teamAScore}
+                        onChange={(e) => setTeamAScore(e.target.value)}
+                        placeholder='Home Score'
+                        disabled={!selectedTeamA}
                         inputSize='sm'
                         className='placeholder:text-sm'
-                        placeholder='Home Score'
                       />
                     </div>
 
                     {/* AWAY TEAM */}
                     <div className='w-full'>
                       <Input
+                        id='away-score'
+                        value={teamBScore}
+                        onChange={(e) => setTeamBScore(e.target.value)}
+                        placeholder='Away Score'
+                        disabled={!selectedTeamB}
                         inputSize='sm'
                         className='placeholder:text-sm'
-                        placeholder='Away Score'
                       />
                     </div>
                   </div>
                 </div>
               </div>
               <div className='w-full'>
-                <Button variant='secondary' size='sm'>
+                <Button variant='secondary' size='sm' onClick={handleSubmitScore}>
                   Add Score
                 </Button>
               </div>
+              {error && <p className='text-xs text-red-500 mt-1'>{error}</p>}
             </div>
           </div>
 

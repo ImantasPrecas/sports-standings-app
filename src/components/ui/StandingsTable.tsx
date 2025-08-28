@@ -1,4 +1,3 @@
-import type { JSX } from 'react'
 import {
   Table,
   TableBody,
@@ -8,23 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from './Table'
+import type { IStandingsTable } from '@/store/premierLeagueSlice'
 
 interface StandingsTableProps {
-  tableData: {
-    standings: {
-      name: string
-      matches?: number
-      won?: number
-      drawn?: number
-      lost?: number
-      points?: number
-      icons?: {
-        won?: JSX.Element
-        lost?: JSX.Element
-      }
-    }[]
-    tableHeader: { title: string; key: string }[]
-  }
+  tableData: IStandingsTable
   rowLine?: boolean
 }
 
@@ -52,7 +38,7 @@ export const StandingsTable = ({ tableData, rowLine }: StandingsTableProps) => {
         <TableBody className='w-full max-h-42 overflow-y-auto block'>
           {tableData.standings.map((team) => (
             <TableRow
-              key={team.name}
+              key={team.teamId}
               className='flex w-full text-foreground'
               rowLine={rowLine}
             >
