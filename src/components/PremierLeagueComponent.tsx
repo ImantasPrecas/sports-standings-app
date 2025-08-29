@@ -18,14 +18,21 @@ export const PremierLeagueComponent = () => {
   const [selectedTeamB, setSelectedTeamB] = useState('')
   const [teamAScore, setTeamAScore] = useState('')
   const [teamBScore, setTeamBScore] = useState('')
-  const [error, setError] = useState('')
+  const [newTeamError, setNewTeamError] = useState('')
+  const [scoreError, setScoreError] = useState('')
 
   const standingsTable = getStandingsTable()
   const teamsList = getTeamsList()
 
   const handleSubmitNewTeam = () => {
+    if (newTeamName.trim()) {
+      if (teamsList.find((p) => p.name === newTeamName.trim())) {
+        setNewTeamError('Team already exists')
+        return
+      }
+    }
     addTeam(newTeamName.trim())
-    setNewTeamName('')
+    resetInputs()
   }
 
   const handleSubmitScore = () => {
@@ -36,14 +43,18 @@ export const PremierLeagueComponent = () => {
       selectedTeamB
     ) {
       if (checkForDuplication(selectedTeamA, selectedTeamB)) {
-        setError('Teams already played against each other')
+        setScoreError('Teams already played against each other')
+        return
+      }
+      if (selectedTeamA === selectedTeamB) {
+        setScoreError('Teams must be different')
         return
       }
       addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
 
       resetInputs()
     } else {
-      setError('Please enter valid scores and select both teams.')
+      setScoreError('Please enter valid scores and select both teams.')
     }
   }
 
@@ -52,11 +63,13 @@ export const PremierLeagueComponent = () => {
     return regex.test(value)
   }
   const resetInputs = () => {
+    setNewTeamName('')
     setSelectedTeamA('')
     setSelectedTeamB('')
     setTeamAScore('')
     setTeamBScore('')
-    setError('')
+    setNewTeamError('')
+    setScoreError('')
   }
 
   const checkForDuplication = (teamA: string, teamB: string) => {
@@ -102,6 +115,9 @@ export const PremierLeagueComponent = () => {
                   Add
                 </Button>
               </div>
+              {newTeamError && (
+                <p className='text-xs text-red-500 mt-1'>{newTeamError}</p>
+              )}
             </div>
           </div>
 
@@ -173,7 +189,7 @@ export const PremierLeagueComponent = () => {
                   Add Score
                 </Button>
               </div>
-              {error && <p className='text-xs text-red-500 mt-1'>{error}</p>}
+              {scoreError && <p className='text-xs text-red-500 mt-1'>{scoreError}</p>}
             </div>
           </div>
 

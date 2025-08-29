@@ -38,6 +38,14 @@ export const WimbledonComponent = () => {
         setError('Players already played against each other')
         return
       }
+      if (selectedPlayerA === selectedPlayerB) {
+        setError('Players must be different')
+        return
+      }
+      if (teamsList.find((p) => p.name === newPlayerName.trim())) {
+        setError('Player already exists')
+        return
+      }
       addMatch(
         selectedPlayerA,
         selectedPlayerB,
@@ -51,11 +59,23 @@ export const WimbledonComponent = () => {
     }
   }
 
+  const handleAddPlayer = () => {
+    if (newPlayerName.trim()) {
+      if (teamsList.find((p) => p.name === newPlayerName.trim())) {
+        setError('Player already exists')
+        return
+      }
+      addPlayer(newPlayerName.trim())
+      setIsAddingPlayer(false)
+      resetInputs()
+    }
+  }
+
   const checkForDuplication = (playerA: string, playerB: string) => {
     const existingMatch = Object.values(getMatches()).find(
       (match) =>
-        (match.playerA === playerA && match.playerB === playerB) ||
-        (match.playerA === playerB && match.playerB === playerA)
+        (match.teamA === playerA && match.teamB === playerB) ||
+        (match.teamA === playerB && match.teamB === playerA)
     )
     return !!existingMatch
   }
@@ -66,6 +86,7 @@ export const WimbledonComponent = () => {
   }
 
   const resetInputs = () => {
+    console.log('reseting')
     setNewPlayerName('')
     setSelectedPlayerA('')
     setSelectedPlayerB('')
@@ -77,12 +98,10 @@ export const WimbledonComponent = () => {
     <SectionWrapper className='theme-design-3'>
       <Card>
         <WimbledonHeader />
-        {/* <div className='flex flex-col lg:flex-row w-full justify-between gap-6'> */}
         <div className='grid lg:grid-cols-6 gap-2'>
-          {/* <div className='flex-row lg:flex-col gap-2 mt-4'> */}
-            {/* ADD PLAYERS AND RESULTS BUTTONS */}
-            <div className='col-span-2 lg:col-span-3 xl:col-span-2 mx-4'>
-              <div className='w-full rounded-md px-2'>
+          {/* ADD PLAYERS AND RESULTS BUTTONS */}
+          <div className='col-span-2 lg:col-span-3 xl:col-span-2 mx-4 mb-4'>
+            <div className='w-full rounded-md px-2'>
               <div className='flex lg:flex-col justify-between lg:gap-6'>
                 {/* ADD PLAYER BUTTON */}
                 <Button
@@ -96,35 +115,42 @@ export const WimbledonComponent = () => {
                 </Button>
                 {/* ADD PLAYER INPUT */}
                 {isAddingPlayer && (
-                  <div className='flex gap-2 w-full'>
-                    <Input
-                      id='wimbledon-player'
-                      value={newPlayerName}
-                      placeholder='Add Player'
-                      onChange={(e) => setNewPlayerName(e.target.value)}
-                    />
-                    <Button
-                      variant='primary'
-                      size='lg'
-                      className='w-auto'
-                      onClick={() => {
-                        addPlayer(newPlayerName)
-                      }}
-                    >
-                      Add
-                    </Button>
-                    <Button
-                      variant='primary'
-                      size='lg'
-                      className='w-auto'
-                      onClick={() => {
-                        setIsAddingPlayer(false)
-                        resetInputs()
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    {error && <div className='text-red-500'>{error}</div>}
+                  <div className='flex flex-col'>
+                    <div className='flex  gap-2 w-full'>
+                      <Input
+                        id='wimbledon-player'
+                        value={newPlayerName}
+                        placeholder='Add Player'
+                        className='bg-muted'
+                        onChange={(e) => setNewPlayerName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleAddPlayer()
+                          }
+                        }}
+                      />
+                      <Button
+                        variant='primary'
+                        size='lg'
+                        className='w-auto'
+                        // onClick={handleAddPlayer}
+                        onClick={handleAddPlayer}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        variant='primary'
+                        size='lg'
+                        className='w-auto'
+                        onClick={() => {
+                          setIsAddingPlayer(false)
+                          resetInputs()
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                    {error && <div className='text-red-800 text-sm'>{error}</div>}
                   </div>
                 )}
 
@@ -152,7 +178,7 @@ export const WimbledonComponent = () => {
                           {/* HOME TEAM */}
                           <div className='w-full'>
                             <SelectEntity
-                              size='sm'
+                              size='lg'
                               placeholder='Home team'
                               options={teamsList}
                               value={selectedPlayerA}
@@ -162,7 +188,7 @@ export const WimbledonComponent = () => {
                           {/* AWAY TEAM */}
                           <div className='w-full'>
                             <SelectEntity
-                              size='sm'
+                              size='lg'
                               placeholder='Away team'
                               options={teamsList}
                               value={selectedPlayerB}
@@ -179,9 +205,14 @@ export const WimbledonComponent = () => {
                                 id='euro-home-score'
                                 value={playerAScore}
                                 onChange={(e) => setPlayerAScore(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSubmitScore()
+                                  }
+                                }}
                                 disabled={!selectedPlayerA}
-                                inputSize='sm'
-                                className='placeholder:text-sm'
+                                inputSize='lg'
+                                className='placeholder:text-sm bg-muted'
                                 placeholder='Home Score'
                               />
                             </div>
@@ -192,9 +223,14 @@ export const WimbledonComponent = () => {
                                 id='euro-away-score'
                                 value={playerBScore}
                                 onChange={(e) => setPlayerBScore(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSubmitScore()
+                                  }
+                                }}
                                 disabled={!selectedPlayerB}
-                                inputSize='sm'
-                                className='placeholder:text-sm'
+                                inputSize='lg'
+                                className='placeholder:text-sm bg-muted'
                                 placeholder='Away Score'
                               />
                             </div>
@@ -202,13 +238,13 @@ export const WimbledonComponent = () => {
                         </div>
                       </div>
                       {/* ADD SCORE BUTTONS */}
-                      <div className='flex flex-col w-full gap-2'>
-                        <Button variant='secondary' size='sm' onClick={handleSubmitScore}>
+                      <div className='flex flex-col w-full gap-2 mt-4'>
+                        <Button variant='secondary' size='lg' onClick={handleSubmitScore}>
                           Add Score
                         </Button>
                         <Button
                           variant='primary'
-                          size='sm'
+                          size='lg'
                           className='border hover:bg-secondary/10'
                           onClick={() => {
                             setIsAddingScores(false)
@@ -217,14 +253,13 @@ export const WimbledonComponent = () => {
                         >
                           Cancel
                         </Button>
-                        {error && <p className='text-xs text-red-500 mt-1'>{error}</p>}
+                        {error && <p className='text-xs text-yellow-400 mt-1'>{error}</p>}
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-
-              </div>
+            </div>
             {/* </div> */}
           </div>
           {/* STANDINGS TABLE */}

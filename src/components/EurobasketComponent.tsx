@@ -47,11 +47,27 @@ export const EurobasketComponent = () => {
         setError('Teams already played against each other')
         return
       }
+      if (selectedTeamA === selectedTeamB) {
+        setError('Teams must be different')
+        return
+      }
       addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
       setIsAddingScores(false)
       resetInputs()
     } else {
       setError('Please enter valid scores and select both teams.')
+    }
+  }
+
+  const handleAddTeam = () => {
+    if (selectedCountry.trim()) {
+      if (teamsList.find((p) => p.name === getCountryLabel(selectedCountry.trim()))) {
+        setError('Team already exists')
+        return
+      }
+      addTeam(getCountryLabel(selectedCountry.trim()))
+      setIsAddingTeam(false)
+      resetInputs()
     }
   }
 
@@ -78,6 +94,13 @@ export const EurobasketComponent = () => {
     setError('')
   }
 
+  const getCountryLabel = (countryCode: string) => {
+    return countryList().getLabel(countryCode)
+  }
+  const getCountryValue = (value: string) => {
+    return countryList().getValue(value)
+  }
+
   return (
     <SectionWrapper className='theme-design-2'>
       <Card className='bg-primary'>
@@ -100,39 +123,36 @@ export const EurobasketComponent = () => {
                 </Button>
                 {/* ADD TEAM INPUT */}
                 {isAddingTeam && (
-                  <div className='flex gap-2 w-full'>
-                    {/* <Input id='team-name' inputSize='sm' placeholder='Team Name' /> */}
-                    <SelectEntity
-                      size='sm'
-                      placeholder='Select team'
-                      options={transformedCountries}
-                      value={selectedCountry}
-                      onSelect={(selectedOption) => setSelectedCountry(selectedOption)}
-                    />
-                    <Button
-                      variant='secondary'
-                      size='sm'
-                      className='w-auto'
-                      onClick={() => {
-                        addTeam(countryList().getLabel(selectedCountry))
-                        setIsAddingTeam(false)
-                        resetInputs()
-                      }}
-                    >
-                      Add
-                    </Button>
-                    <Button
-                      variant='secondary'
-                      size='sm'
-                      className='w-auto'
-                      onClick={() => {
-                        setIsAddingTeam(false)
-                        resetInputs()
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    {error && <div className='text-red-500'>{error}</div>}
+                  <div className='flex-col gap-2 w-full'>
+                    <div className='flex gap-2'>
+                      <SelectEntity
+                        size='sm'
+                        placeholder='Select team'
+                        options={transformedCountries}
+                        value={selectedCountry}
+                        onSelect={(selectedOption) => setSelectedCountry(selectedOption)}
+                      />
+                      <Button
+                        variant='secondary'
+                        size='sm'
+                        className='w-auto'
+                        onClick={handleAddTeam}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        variant='secondary'
+                        size='sm'
+                        className='w-auto'
+                        onClick={() => {
+                          setIsAddingTeam(false)
+                          resetInputs()
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                    {error && <div className='text-red-500 text-sm mt-1'>{error}</div>}
                   </div>
                 )}
 
@@ -149,7 +169,7 @@ export const EurobasketComponent = () => {
                 {/* ADD SCORES FORM */}
                 {isAddingScores && (
                   <div
-                    className={`col-span-1 mb-4 w-full ${
+                    className={`col-span-1 mb-4 w-full  ${
                       isAddingScores ? 'block' : 'hidden'
                     }`}
                   >
@@ -187,6 +207,11 @@ export const EurobasketComponent = () => {
                                 id='euro-home-score'
                                 value={teamAScore}
                                 onChange={(e) => setTeamAScore(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSubmitScore()
+                                  }
+                                }}
                                 disabled={!selectedTeamA}
                                 inputSize='sm'
                                 className='placeholder:text-sm'
@@ -200,6 +225,11 @@ export const EurobasketComponent = () => {
                                 id='euro-away-score'
                                 value={teamBScore}
                                 onChange={(e) => setTeamBScore(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSubmitScore()
+                                  }
+                                }}
                                 disabled={!selectedTeamB}
                                 inputSize='sm'
                                 className='placeholder:text-sm'
@@ -210,7 +240,7 @@ export const EurobasketComponent = () => {
                         </div>
                       </div>
                       {/* ADD SCORE BUTTONS */}
-                      <div className='flex flex-col w-full gap-2'>
+                      <div className='flex flex-col w-full gap-2 mt-4'>
                         <Button variant='secondary' size='sm' onClick={handleSubmitScore}>
                           Add Score
                         </Button>
@@ -237,10 +267,15 @@ export const EurobasketComponent = () => {
           <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0'>
             <div className='flex flex-col text-primary-foreground'>
               {/* Map through played matches data */}
+              {matches.length === 0 ? (
+                <p className='text-sm text-center'>No matches played yet</p>
+              ) : (
+                <p className='text-sm mb-2 hidden lg:block'>Matches</p>
+              )}
               <ul className='flex flex-col'>
                 {matches.map((match, index, array) => {
-                  const teamAFlag = countryList().getValue(match.teamA!)
-                  const teamBFlag = countryList().getValue(match.teamB!)
+                  const teamAFlag = getCountryValue(match.teamA!)
+                  const teamBFlag = getCountryValue(match.teamB!)
                   return (
                     <div key={index} className='space-y-2'>
                       <li className='flex justify-between bg-primary rounded-md'>
