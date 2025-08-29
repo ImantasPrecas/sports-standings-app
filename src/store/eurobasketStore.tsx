@@ -82,10 +82,10 @@ const UseEurobasketStore = create<IEurobasketStore>()(
 
             const updateTeamStats = (teamId: string, result: string) => {
               const teamStats = get().standings[teamId]
-              let won = teamStats.won
-              let drawn = teamStats.drawn
-              let lost = teamStats.lost
-              let points = teamStats.points
+              let won = teamStats.won || 0
+              let drawn = teamStats.drawn || 0
+              let lost = teamStats.lost || 0
+              let points = teamStats.points || 0
 
               if (result === 'win') {
                 won += 1

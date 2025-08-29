@@ -77,11 +77,13 @@ export const WimbledonComponent = () => {
     <SectionWrapper className='theme-design-3'>
       <Card>
         <WimbledonHeader />
-        <div className='flex flex-col lg:flex-row w-full justify-between gap-6'>
-          <div className='flex-row lg:flex-col gap-2 mt-4'>
+        {/* <div className='flex flex-col lg:flex-row w-full justify-between gap-6'> */}
+        <div className='grid lg:grid-cols-6 gap-2'>
+          {/* <div className='flex-row lg:flex-col gap-2 mt-4'> */}
             {/* ADD PLAYERS AND RESULTS BUTTONS */}
-            <div className='mx-4'>
-              <div className='flex items-center justify-between lg:flex-col lg:gap-6'>
+            <div className='col-span-2 lg:col-span-3 xl:col-span-2 mx-4'>
+              <div className='w-full rounded-md px-2'>
+              <div className='flex lg:flex-col justify-between lg:gap-6'>
                 {/* ADD PLAYER BUTTON */}
                 <Button
                   variant='primary'
@@ -221,10 +223,12 @@ export const WimbledonComponent = () => {
                   </div>
                 )}
               </div>
-            </div>
+
+              </div>
+            {/* </div> */}
           </div>
           {/* STANDINGS TABLE */}
-          <div className='col-span-2 mx-4 mb-4 mt-4'>
+          <div className='col-span-2 lg:col-start-5 mx-4 mb-4 mt-4'>
             <StandingsTable tableData={standingsTable} />
           </div>
         </div>

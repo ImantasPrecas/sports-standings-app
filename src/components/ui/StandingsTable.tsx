@@ -49,7 +49,7 @@ export const StandingsTable = ({ tableData, rowLine, withFlag }: StandingsTableP
                 {withFlag && (
                   <ReactCountryFlag
                     className='mr-2'
-                    countryCode={countryList().getValue(team.teamId)}
+                    countryCode={countryList().getValue(team.teamId || '')}
                   />
                 )}
                 <p>{team.name}</p>

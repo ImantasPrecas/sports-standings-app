@@ -1,5 +1,5 @@
-// import { PremierLeagueComponent } from './components/PremierLeagueComponent'
-// import { EurobasketComponent } from './components/EurobasketComponent'
+import { PremierLeagueComponent } from './components/PremierLeagueComponent'
+import { EurobasketComponent } from './components/EurobasketComponent'
 import { WimbledonComponent } from './components/WimbledonComponent'
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
         <header>
           <h1 className='text-4xl'>Sports Standings App</h1>
         </header>
-        {/* <PremierLeagueComponent /> */}
-        {/* <EurobasketComponent /> */}
+        <PremierLeagueComponent />
+        <EurobasketComponent />
         <WimbledonComponent />
       </main>
     </>
