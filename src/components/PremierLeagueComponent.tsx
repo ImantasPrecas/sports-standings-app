@@ -9,6 +9,7 @@ import { StandingsTable } from './ui/StandingsTable'
 
 import { useState } from 'react'
 import UsePremierLeagueStore from '@/store/premierLeagueStore'
+import { checkForDuplication, validateNumericInput } from '@/lib/utils'
 
 export const PremierLeagueComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
@@ -23,6 +24,7 @@ export const PremierLeagueComponent = () => {
 
   const standingsTable = getStandingsTable()
   const teamsList = getTeamsList()
+  const existingMatches = Object.values(getMatches())
 
   const handleSubmitNewTeam = () => {
     if (newTeamName.trim()) {
@@ -37,12 +39,12 @@ export const PremierLeagueComponent = () => {
 
   const handleSubmitScore = () => {
     if (
-      validateInput(teamAScore) &&
-      validateInput(teamBScore) &&
+      validateNumericInput(teamAScore) &&
+      validateNumericInput(teamBScore) &&
       selectedTeamA &&
       selectedTeamB
     ) {
-      if (checkForDuplication(selectedTeamA, selectedTeamB)) {
+      if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
         setScoreError('Teams already played against each other')
         return
       }
@@ -58,10 +60,6 @@ export const PremierLeagueComponent = () => {
     }
   }
 
-  const validateInput = (value: string) => {
-    const regex = /^[0-9]+$/
-    return regex.test(value)
-  }
   const resetInputs = () => {
     setNewTeamName('')
     setSelectedTeamA('')
@@ -72,14 +70,14 @@ export const PremierLeagueComponent = () => {
     setScoreError('')
   }
 
-  const checkForDuplication = (teamA: string, teamB: string) => {
-    const existingMatch = Object.values(getMatches()).find(
-      (match) =>
-        (match.teamA === teamA && match.teamB === teamB) ||
-        (match.teamA === teamB && match.teamB === teamA)
-    )
-    return !!existingMatch
-  }
+  // const checkForDuplication = (teamA: string, teamB: string) => {
+  //   const existingMatch = Object.values(getMatches()).find(
+  //     (match) =>
+  //       (match.teamA === teamA && match.teamB === teamB) ||
+  //       (match.teamA === teamB && match.teamB === teamA)
+  //   )
+  //   return !!existingMatch
+  // }
 
   return (
     <SectionWrapper className='theme-design-1'>

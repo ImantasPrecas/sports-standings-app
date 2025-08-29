@@ -8,10 +8,16 @@ import { Input } from './ui/Input'
 import { SelectEntity } from './ui/SelectEntity'
 import { StandingsTable } from './ui/StandingsTable'
 import basketBall from '../assets/basketball-ball.svg'
-import countryList from 'react-select-country-list'
 import { useState } from 'react'
 import UseEurobasketStore from '@/store/eurobasketStore'
 import ReactCountryFlag from 'react-country-flag'
+import {
+  checkForDuplication,
+  getCountriesList,
+  getCountryLabel,
+  getCountryValue,
+  validateNumericInput,
+} from '@/lib/utils'
 
 export const EurobasketComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
@@ -25,7 +31,7 @@ export const EurobasketComponent = () => {
   const [teamBScore, setTeamBScore] = useState('')
   const [error, setError] = useState('')
 
-  const countries = countryList().getData()
+  const countries = getCountriesList()
   const transformedCountries = countries.map((country) => ({
     id: country.value,
     name: country.label,
@@ -34,16 +40,17 @@ export const EurobasketComponent = () => {
 
   const teamsList = getTeamsList()
   const standingsTable = getStandingsTable()
+  const existingMatches = Object.values(getMatches())
   const matches = getMatches()
 
   const handleSubmitScore = () => {
     if (
-      validateInput(teamAScore) &&
-      validateInput(teamBScore) &&
+      validateNumericInput(teamAScore) &&
+      validateNumericInput(teamBScore) &&
       selectedTeamA &&
       selectedTeamB
     ) {
-      if (checkForDuplication(selectedTeamA, selectedTeamB)) {
+      if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
         setError('Teams already played against each other')
         return
       }
@@ -71,20 +78,6 @@ export const EurobasketComponent = () => {
     }
   }
 
-  const checkForDuplication = (teamA: string, teamB: string) => {
-    const existingMatch = Object.values(getMatches()).find(
-      (match) =>
-        (match.teamA === teamA && match.teamB === teamB) ||
-        (match.teamA === teamB && match.teamB === teamA)
-    )
-    return !!existingMatch
-  }
-
-  const validateInput = (value: string) => {
-    const regex = /^[0-9]+$/
-    return regex.test(value)
-  }
-
   const resetInputs = () => {
     setSelectedCountry('')
     setSelectedTeamA('')
@@ -92,13 +85,6 @@ export const EurobasketComponent = () => {
     setTeamAScore('')
     setTeamBScore('')
     setError('')
-  }
-
-  const getCountryLabel = (countryCode: string) => {
-    return countryList().getLabel(countryCode)
-  }
-  const getCountryValue = (value: string) => {
-    return countryList().getValue(value)
   }
 
   return (

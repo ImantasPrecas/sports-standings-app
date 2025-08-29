@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Input } from './ui/Input'
 import { SelectEntity } from './ui/SelectEntity'
 import { Plus } from 'lucide-react'
+import { checkForDuplication, validateNumericInput } from '@/lib/utils'
 
 export const WimbledonComponent = () => {
   const { getPlayersList, addPlayer, getStandingsTable, addMatch, getMatches } =
@@ -26,15 +27,16 @@ export const WimbledonComponent = () => {
 
   const teamsList = getPlayersList()
   const standingsTable = getStandingsTable()
+  const existingMatches = Object.values(getMatches())
 
   const handleSubmitScore = () => {
     if (
-      validateInput(playerAScore) &&
-      validateInput(playerBScore) &&
+      validateNumericInput(playerAScore) &&
+      validateNumericInput(playerBScore) &&
       selectedPlayerA &&
       selectedPlayerB
     ) {
-      if (checkForDuplication(selectedPlayerA, selectedPlayerB)) {
+      if (checkForDuplication(selectedPlayerA, selectedPlayerB, existingMatches)) {
         setError('Players already played against each other')
         return
       }
@@ -69,20 +71,6 @@ export const WimbledonComponent = () => {
       setIsAddingPlayer(false)
       resetInputs()
     }
-  }
-
-  const checkForDuplication = (playerA: string, playerB: string) => {
-    const existingMatch = Object.values(getMatches()).find(
-      (match) =>
-        (match.teamA === playerA && match.teamB === playerB) ||
-        (match.teamA === playerB && match.teamB === playerA)
-    )
-    return !!existingMatch
-  }
-
-  const validateInput = (value: string) => {
-    const regex = /^[0-9]+$/
-    return regex.test(value)
   }
 
   const resetInputs = () => {
