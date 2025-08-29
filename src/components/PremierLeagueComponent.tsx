@@ -31,13 +31,13 @@ export const PremierLeagueComponent = () => {
   const existingMatches = Object.values(getMatches())
 
   const handleAddNewTeam = () => {
-    const teamName = newTeamName.trim().toLowerCase()
-    
+    const teamName = newTeamName.trim()
+
     if (!teamName) {
       setNewTeamError('Team name is required')
       return
     }
-    if (checkExistingEntity(teamsList, 'id', teamName)) {
+    if (checkExistingEntity(teamsList, 'id', teamName.toLowerCase())) {
       setNewTeamError('Team already exists')
       return
     }
@@ -47,26 +47,28 @@ export const PremierLeagueComponent = () => {
   }
 
   const handleSubmitScore = () => {
-    if (
-      validateNumericInput(teamAScore) &&
-      validateNumericInput(teamBScore) &&
-      selectedTeamA &&
-      selectedTeamB
-    ) {
-      if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
-        setScoreError('Teams already played against each other')
-        return
-      }
-      if (selectedTeamA === selectedTeamB) {
-        setScoreError('Teams must be different')
-        return
-      }
-      addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
-
-      resetInputs()
-    } else {
-      setScoreError('Please enter valid scores and select both teams.')
+    if (!selectedTeamA || !selectedTeamB) {
+      setScoreError('Please select both teams.')
+      return
     }
+
+    if (selectedTeamA === selectedTeamB) {
+      setScoreError('Teams must be different')
+      return
+    }
+
+    if (!validateNumericInput(teamAScore) || !validateNumericInput(teamBScore)) {
+      setScoreError('Please enter valid scores for both teams.')
+      return
+    }
+
+    if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
+      setScoreError('Teams already played against each other')
+      return
+    }
+
+    addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
+    resetInputs()
   }
 
   const resetInputs = () => {

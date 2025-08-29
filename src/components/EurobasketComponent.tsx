@@ -46,7 +46,7 @@ export const EurobasketComponent = () => {
 
   const handleAddNewTeam = () => {
     const newCountry = getCountryLabel(selectedCountry.trim().toLowerCase())
-    
+
     if (!newCountry) {
       setError('Country name is required')
       return
@@ -62,26 +62,29 @@ export const EurobasketComponent = () => {
   }
 
   const handleSubmitScore = () => {
-    if (
-      validateNumericInput(teamAScore) &&
-      validateNumericInput(teamBScore) &&
-      selectedTeamA &&
-      selectedTeamB
-    ) {
-      if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
-        setError('Teams already played against each other')
-        return
-      }
-      if (selectedTeamA === selectedTeamB) {
-        setError('Teams must be different')
-        return
-      }
-      addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
-      setIsAddingScores(false)
-      resetInputs()
-    } else {
-      setError('Please enter valid scores and select both teams.')
+    if (!selectedTeamA || !selectedTeamB) {
+      setError('Please select both teams')
+      return
     }
+
+    if (selectedTeamA === selectedTeamB) {
+      setError('Teams must be different')
+      return
+    }
+
+    if (!validateNumericInput(teamAScore) || !validateNumericInput(teamBScore)) {
+      setError('Please enter valid scores for both teams')
+      return
+    }
+
+    if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
+      setError('Teams already played against each other')
+      return
+    }
+
+    addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
+    setIsAddingScores(false)
+    resetInputs()
   }
 
   const resetInputs = () => {

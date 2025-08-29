@@ -47,38 +47,39 @@ export const WimbledonComponent = () => {
 
     addPlayer(newPlayerName.trim())
     setIsAddingPlayer(false)
+    resetInputs()
   }
-  
+
   const handleSubmitScore = () => {
-    if (
-      validateNumericInput(playerAScore) &&
-      validateNumericInput(playerBScore) &&
-      selectedPlayerA &&
-      selectedPlayerB
-    ) {
-      if (checkForDuplication(selectedPlayerA, selectedPlayerB, existingMatches)) {
-        setError('Players already played against each other')
-        return
-      }
-      if (selectedPlayerA === selectedPlayerB) {
-        setError('Players must be different')
-        return
-      }
-      if (teamsList.find((p) => p.name === newPlayerName.trim())) {
-        setError('Player already exists')
-        return
-      }
-      addMatch(
-        selectedPlayerA,
-        selectedPlayerB,
-        Number(playerAScore),
-        Number(playerBScore)
-      )
-      setIsAddingScores(false)
-      resetInputs()
-    } else {
-      setError('Please enter valid scores and select both players.')
+    if (!selectedPlayerA || !selectedPlayerB) {
+      setError('Please select both players.')
+      return
     }
+
+    if (selectedPlayerA === selectedPlayerB) {
+      setError('Players must be different')
+      return
+    }
+    
+    if (!validateNumericInput(playerAScore) || !validateNumericInput(playerBScore)) {
+      setError('Please enter valid numeric scores.')
+      return
+    }
+
+
+    if (checkForDuplication(selectedPlayerA, selectedPlayerB, existingMatches)) {
+      setError('Players already played against each other')
+      return
+    }
+
+    if (teamsList.find((p) => p.name === newPlayerName.trim())) {
+      setError('Player already exists')
+      return
+    }
+
+    addMatch(selectedPlayerA, selectedPlayerB, Number(playerAScore), Number(playerBScore))
+    setIsAddingScores(false)
+    resetInputs()
   }
 
   const resetInputs = () => {
