@@ -9,7 +9,11 @@ import { StandingsTable } from './ui/StandingsTable'
 
 import { useState } from 'react'
 import UsePremierLeagueStore from '@/store/premierLeagueStore'
-import { checkForDuplication, validateNumericInput } from '@/lib/utils'
+import {
+  checkExistingEntity,
+  checkForDuplication,
+  validateNumericInput,
+} from '@/lib/utils'
 
 export const PremierLeagueComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
@@ -26,14 +30,19 @@ export const PremierLeagueComponent = () => {
   const teamsList = getTeamsList()
   const existingMatches = Object.values(getMatches())
 
-  const handleSubmitNewTeam = () => {
-    if (newTeamName.trim()) {
-      if (teamsList.find((p) => p.name === newTeamName.trim())) {
-        setNewTeamError('Team already exists')
-        return
-      }
+  const handleAddNewTeam = () => {
+    const teamName = newTeamName.trim().toLowerCase()
+    
+    if (!teamName) {
+      setNewTeamError('Team name is required')
+      return
     }
-    addTeam(newTeamName.trim())
+    if (checkExistingEntity(teamsList, 'id', teamName)) {
+      setNewTeamError('Team already exists')
+      return
+    }
+
+    addTeam(teamName)
     resetInputs()
   }
 
@@ -70,15 +79,6 @@ export const PremierLeagueComponent = () => {
     setScoreError('')
   }
 
-  // const checkForDuplication = (teamA: string, teamB: string) => {
-  //   const existingMatch = Object.values(getMatches()).find(
-  //     (match) =>
-  //       (match.teamA === teamA && match.teamB === teamB) ||
-  //       (match.teamA === teamB && match.teamB === teamA)
-  //   )
-  //   return !!existingMatch
-  // }
-
   return (
     <SectionWrapper className='theme-design-1'>
       <Card>
@@ -95,7 +95,7 @@ export const PremierLeagueComponent = () => {
                   onChange={(e) => setNewTeamName(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      handleSubmitNewTeam()
+                      handleAddNewTeam()
                     }
                   }}
                   value={newTeamName}
@@ -108,7 +108,7 @@ export const PremierLeagueComponent = () => {
                   variant='secondary'
                   size='sm'
                   className='w-auto'
-                  onClick={handleSubmitNewTeam}
+                  onClick={handleAddNewTeam}
                 >
                   Add
                 </Button>

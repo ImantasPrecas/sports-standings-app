@@ -12,6 +12,7 @@ import { useState } from 'react'
 import UseEurobasketStore from '@/store/eurobasketStore'
 import ReactCountryFlag from 'react-country-flag'
 import {
+  checkExistingEntity,
   checkForDuplication,
   getCountriesList,
   getCountryLabel,
@@ -43,6 +44,23 @@ export const EurobasketComponent = () => {
   const existingMatches = Object.values(getMatches())
   const matches = getMatches()
 
+  const handleAddNewTeam = () => {
+    const newCountry = getCountryLabel(selectedCountry.trim().toLowerCase())
+    
+    if (!newCountry) {
+      setError('Country name is required')
+      return
+    }
+    if (checkExistingEntity(teamsList, 'name', newCountry)) {
+      setError('Team already exists')
+      return
+    }
+
+    addTeam(getCountryLabel(selectedCountry.trim()))
+    setIsAddingTeam(false)
+    resetInputs()
+  }
+
   const handleSubmitScore = () => {
     if (
       validateNumericInput(teamAScore) &&
@@ -63,18 +81,6 @@ export const EurobasketComponent = () => {
       resetInputs()
     } else {
       setError('Please enter valid scores and select both teams.')
-    }
-  }
-
-  const handleAddTeam = () => {
-    if (selectedCountry.trim()) {
-      if (teamsList.find((p) => p.name === getCountryLabel(selectedCountry.trim()))) {
-        setError('Team already exists')
-        return
-      }
-      addTeam(getCountryLabel(selectedCountry.trim()))
-      setIsAddingTeam(false)
-      resetInputs()
     }
   }
 
@@ -122,7 +128,7 @@ export const EurobasketComponent = () => {
                         variant='secondary'
                         size='sm'
                         className='w-auto'
-                        onClick={handleAddTeam}
+                        onClick={handleAddNewTeam}
                       >
                         Add
                       </Button>

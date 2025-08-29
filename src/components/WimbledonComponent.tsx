@@ -11,7 +11,11 @@ import { useState } from 'react'
 import { Input } from './ui/Input'
 import { SelectEntity } from './ui/SelectEntity'
 import { Plus } from 'lucide-react'
-import { checkForDuplication, validateNumericInput } from '@/lib/utils'
+import {
+  checkExistingEntity,
+  checkForDuplication,
+  validateNumericInput,
+} from '@/lib/utils'
 
 export const WimbledonComponent = () => {
   const { getPlayersList, addPlayer, getStandingsTable, addMatch, getMatches } =
@@ -29,6 +33,22 @@ export const WimbledonComponent = () => {
   const standingsTable = getStandingsTable()
   const existingMatches = Object.values(getMatches())
 
+  const handleAddPlayer = () => {
+    const newPlayer = newPlayerName.trim().toLowerCase()
+
+    if (!newPlayer) {
+      setError('Player name is required')
+      return
+    }
+    if (checkExistingEntity(teamsList, 'name', newPlayer)) {
+      setError('Player already exists')
+      return
+    }
+
+    addPlayer(newPlayerName.trim())
+    setIsAddingPlayer(false)
+  }
+  
   const handleSubmitScore = () => {
     if (
       validateNumericInput(playerAScore) &&
@@ -58,18 +78,6 @@ export const WimbledonComponent = () => {
       resetInputs()
     } else {
       setError('Please enter valid scores and select both players.')
-    }
-  }
-
-  const handleAddPlayer = () => {
-    if (newPlayerName.trim()) {
-      if (teamsList.find((p) => p.name === newPlayerName.trim())) {
-        setError('Player already exists')
-        return
-      }
-      addPlayer(newPlayerName.trim())
-      setIsAddingPlayer(false)
-      resetInputs()
     }
   }
 
