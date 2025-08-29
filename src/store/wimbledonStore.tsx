@@ -33,7 +33,7 @@ const useWimbledonStore = create<IWimbledonStore>()(
             set((state) => {
               state.players[id] = { id, name }
               state.standings[id] = {
-                playerId: id,
+                id,
                 name,
                 matches: 0,
                 won: 0,
@@ -81,10 +81,10 @@ const useWimbledonStore = create<IWimbledonStore>()(
               resultB = 'win'
             }
 
-            const updatePlayerStats = (playerId: string, result: string) => {
-              const playerStats = get().standings[playerId] || {
-                playerId,
-                name: get().players[playerId]?.name || '',
+            const updatePlayerStats = (id: string, result: string) => {
+              const playerStats = get().standings[id] || {
+                id,
+                name: get().players[id]?.name || '',
                 matches: 0,
                 won: 0,
                 lost: 0,
@@ -105,7 +105,7 @@ const useWimbledonStore = create<IWimbledonStore>()(
               }
 
               return {
-                playerId,
+                id,
                 matches,
                 won,
                 lost,

@@ -34,7 +34,7 @@ const UseEurobasketStore = create<IEurobasketStore>()(
             set((state) => {
               state.teams[id] = { id, name }
               state.standings[id] = {
-                teamId: id,
+                id,
                 name,
                 // matches: 0,
                 won: 0,
@@ -80,8 +80,8 @@ const UseEurobasketStore = create<IEurobasketStore>()(
               resultB = 'win'
             }
 
-            const updateTeamStats = (teamId: string, result: string) => {
-              const teamStats = get().standings[teamId]
+            const updateTeamStats = (id: string, result: string) => {
+              const teamStats = get().standings[id]
               let won = teamStats.won || 0
               let drawn = teamStats.drawn || 0
               let lost = teamStats.lost || 0
@@ -98,7 +98,7 @@ const UseEurobasketStore = create<IEurobasketStore>()(
               }
 
               return {
-                teamId,
+                id,
                 won,
                 drawn,
                 lost,

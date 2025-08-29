@@ -1,38 +1,27 @@
-import { Plus } from 'lucide-react'
-import { Button } from './ui/Button'
-import { Card } from './ui/Card'
-import { CardHeader } from './ui/CardHeader'
-import { CardTitle } from './ui/CardTitle'
-import { SectionWrapper } from './ui/SectionWrapper'
-import { Input } from './ui/Input'
-import { SelectEntity } from './ui/SelectEntity'
-import { StandingsTable } from './ui/StandingsTable'
-import basketBall from '../assets/basketball-ball.svg'
-import { useState } from 'react'
-import UseEurobasketStore from '@/store/eurobasketStore'
 import ReactCountryFlag from 'react-country-flag'
-import {
-  checkExistingEntity,
-  checkForDuplication,
-  getCountriesList,
-  getCountryLabel,
-  getCountryValue,
-  validateNumericInput,
-} from '@/lib/utils'
+import UseEurobasketStore from '@/store/eurobasketStore'
+import { useMemo } from 'react'
+import { Plus } from 'lucide-react'
+import { getCountriesList, getCountryLabel, getCountryValue } from '@/lib/utils'
+
+import basketBall from '../assets/basketball-ball.svg'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { CardHeader } from '@/components/ui/CardHeader'
+import { CardTitle } from '@/components/ui/CardTitle'
+import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { Input } from '@/components/ui/Input'
+import { SelectEntity } from '@/components/ui/SelectEntity'
+import { StandingsTable } from '@/components/ui/StandingsTable'
+import { useNewEntity } from '@/hooks/useNewEtity'
+import { useAddScores } from '@/hooks/useAddSores'
 
 export const EurobasketComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
     UseEurobasketStore()
-  const [isAddingTeam, setIsAddingTeam] = useState(false)
-  const [isAddingScores, setIsAddingScores] = useState(false)
-  const [selectedCountry, setSelectedCountry] = useState('')
-  const [selectedTeamA, setSelectedTeamA] = useState('')
-  const [selectedTeamB, setSelectedTeamB] = useState('')
-  const [teamAScore, setTeamAScore] = useState('')
-  const [teamBScore, setTeamBScore] = useState('')
-  const [error, setError] = useState('')
 
-  const countries = getCountriesList()
+  const countries = useMemo(() => getCountriesList(), [])
+
   const transformedCountries = countries.map((country) => ({
     id: country.value,
     name: country.label,
@@ -44,64 +33,43 @@ export const EurobasketComponent = () => {
   const existingMatches = Object.values(getMatches())
   const matches = getMatches()
 
-  const handleAddNewTeam = () => {
-    const newCountry = getCountryLabel(selectedCountry.trim().toLowerCase())
+  const {
+    newEntityName: selectedCountry,
+    setNewEntityName: setSelectedCountry,
+    newEntityError: error,
+    isAddingNewEntity: isAddingTeam,
+    setIsAddingNewEntity: setIsAddingTeam,
+    handleAddNewEntity: handleAddNewTeam,
+  } = useNewEntity({
+    addEntity: addTeam,
+    validationId: 'id',
+    teamsList,
+  })
 
-    if (!newCountry) {
-      setError('Country name is required')
-      return
-    }
-    if (checkExistingEntity(teamsList, 'name', newCountry)) {
-      setError('Team already exists')
-      return
-    }
-
-    addTeam(getCountryLabel(selectedCountry.trim()))
-    setIsAddingTeam(false)
-    resetInputs()
-  }
-
-  const handleSubmitScore = () => {
-    if (!selectedTeamA || !selectedTeamB) {
-      setError('Please select both teams')
-      return
-    }
-
-    if (selectedTeamA === selectedTeamB) {
-      setError('Teams must be different')
-      return
-    }
-
-    if (!validateNumericInput(teamAScore) || !validateNumericInput(teamBScore)) {
-      setError('Please enter valid scores for both teams')
-      return
-    }
-
-    if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
-      setError('Teams already played against each other')
-      return
-    }
-
-    addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
-    setIsAddingScores(false)
-    resetInputs()
-  }
-
-  const resetInputs = () => {
-    setSelectedCountry('')
-    setSelectedTeamA('')
-    setSelectedTeamB('')
-    setTeamAScore('')
-    setTeamBScore('')
-    setError('')
-  }
+  const {
+    p1: selectedTeamA,
+    setP1: setSelectedTeamA,
+    p2: selectedTeamB,
+    setP2: setSelectedTeamB,
+    score1: teamAScore,
+    setScore1: setTeamAScore,
+    score2: teamBScore,
+    setScore2: setTeamBScore,
+    isAddingScores,
+    setIsAddingScores,
+    scoreError,
+    handleSubmitScore,
+    resetInputs,
+  } = useAddScores({
+    existingMatches,
+    addMatch,
+  })
 
   return (
     <SectionWrapper className='theme-design-2'>
       <Card className='bg-primary'>
-        {/* Header */}
         <EurobasketHeader />
-        <div className='grid lg:grid-cols-6 gap-2 bg-primary'>
+        <GridLayout className='bg-primary'>
           {/* ADD Buttons */}
           <div className='col-span-2 mx-2'>
             <div className='w-full rounded-md px-2'>
@@ -124,8 +92,12 @@ export const EurobasketComponent = () => {
                         size='sm'
                         placeholder='Select team'
                         options={transformedCountries}
-                        value={selectedCountry}
-                        onSelect={(selectedOption) => setSelectedCountry(selectedOption)}
+                        value={getCountryValue(selectedCountry)}
+                        onSelect={(selectedOption) =>
+                          setSelectedCountry(
+                            getCountryLabel(selectedOption.trim().toLowerCase())
+                          )
+                        }
                       />
                       <Button
                         variant='secondary'
@@ -250,7 +222,9 @@ export const EurobasketComponent = () => {
                         >
                           Cancel
                         </Button>
-                        {error && <p className='text-xs text-red-500 mt-1'>{error}</p>}
+                        {scoreError && (
+                          <p className='text-xs text-red-500 mt-1'>{scoreError}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -302,7 +276,7 @@ export const EurobasketComponent = () => {
           <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0 pb-10'>
             <StandingsTable tableData={standingsTable} rowLine={false} withFlag={true} />
           </div>
-        </div>
+        </GridLayout>
       </Card>
     </SectionWrapper>
   )
@@ -321,4 +295,14 @@ const EurobasketHeader = () => {
       </CardTitle>
     </CardHeader>
   )
+}
+
+export const GridLayout = ({
+  className,
+  children,
+}: {
+  className?: string
+  children: React.ReactNode
+}) => {
+  return <div className={`grid lg:grid-cols-6 gap-2 ${className}`}>{children}</div>
 }

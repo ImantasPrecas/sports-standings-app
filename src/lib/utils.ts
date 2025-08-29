@@ -36,6 +36,10 @@ export const checkForDuplication = (
   return !!existingMatch
 }
 
-export const checkExistingEntity = <T>(entities: T[], identifier: string, value: string) => {
+export const checkExistingEntity = <T>(
+  entities: T[],
+  identifier: string,
+  value: string
+) => {
   return entities.find((entity) => entity[identifier as keyof T] === value)
 }

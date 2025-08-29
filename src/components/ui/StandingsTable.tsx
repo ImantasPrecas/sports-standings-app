@@ -18,6 +18,7 @@ interface StandingsTableProps {
 }
 
 export const StandingsTable = ({ tableData, rowLine, withFlag }: StandingsTableProps) => {
+  // console.log(tableData)
   return (
     <Table className='flex-col'>
       <TableHeader className='flex w-full'>
@@ -39,48 +40,51 @@ export const StandingsTable = ({ tableData, rowLine, withFlag }: StandingsTableP
       </TableHeader>
       {tableData.standings.length !== 0 && (
         <TableBody className='w-full max-h-42 overflow-y-auto block'>
-          {tableData.standings.map((team) => (
-            <TableRow
-              key={team.teamId}
-              className='flex w-full text-foreground'
-              rowLine={rowLine}
-            >
-              <TableCell className='flex flex-1 items-center'>
-                {withFlag && (
-                  <ReactCountryFlag
-                    className='mr-2'
-                    countryCode={countryList().getValue(team.teamId || '')}
-                  />
+          {tableData.standings.map((team) => {
+            console.log(team)
+            return (
+              <TableRow
+                key={team.id}
+                className='flex w-full text-foreground'
+                rowLine={rowLine}
+              >
+                <TableCell className='flex flex-1 items-center'>
+                  {withFlag && (
+                    <ReactCountryFlag
+                      className='mr-2'
+                      countryCode={countryList().getValue(team.id || '')}
+                    />
+                  )}
+                  <p>{team.name}</p>
+                </TableCell>
+                {team.matches !== undefined && (
+                  <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
                 )}
-                <p>{team.name}</p>
-              </TableCell>
-              {team.matches !== undefined && (
-                <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
-              )}
-              {team.won !== undefined && (
-                <TableCell className='min-w-10 text-center'>
-                  <p className='flex items-center justify-center gap-1'>
-                    {team.won}
-                    <span> {team.icons?.won}</span>
-                  </p>
-                </TableCell>
-              )}
-              {team.drawn !== undefined && (
-                <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
-              )}
-              {team.lost !== undefined && (
-                <TableCell className='min-w-10 text-center'>
-                  <p className='flex items-center justify-center gap-1'>
-                    {team.lost}
-                    <span> {team.icons?.lost}</span>
-                  </p>
-                </TableCell>
-              )}
-              {team.points !== undefined && (
-                <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
-              )}
-            </TableRow>
-          ))}
+                {team.won !== undefined && (
+                  <TableCell className='min-w-10 text-center'>
+                    <p className='flex items-center justify-center gap-1'>
+                      {team.won}
+                      <span> {team.icons?.won}</span>
+                    </p>
+                  </TableCell>
+                )}
+                {team.drawn !== undefined && (
+                  <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
+                )}
+                {team.lost !== undefined && (
+                  <TableCell className='min-w-10 text-center'>
+                    <p className='flex items-center justify-center gap-1'>
+                      {team.lost}
+                      <span> {team.icons?.lost}</span>
+                    </p>
+                  </TableCell>
+                )}
+                {team.points !== undefined && (
+                  <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
+                )}
+              </TableRow>
+            )
+          })}
         </TableBody>
       )}
 

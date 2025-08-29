@@ -33,7 +33,7 @@ const UsePremierLeagueStore = create<IPremierLeagueSlice>()(
             set((state) => {
               state.teams[id] = { id, name }
               state.standings[id] = {
-                teamId: id,
+                id,
                 name,
                 matches: 0,
                 won: 0,
@@ -80,10 +80,10 @@ const UsePremierLeagueStore = create<IPremierLeagueSlice>()(
               resultB = 'win'
             }
 
-            const updateTeamStats = (teamId: string, result: string) => {
-              const teamStats = get().standings[teamId] || {
-                teamId,
-                name: get().teams[teamId]?.name || '',
+            const updateTeamStats = (id: string, result: string) => {
+              const teamStats = get().standings[id] || {
+                id,
+                name: get().teams[id]?.name || '',
                 matches: 0,
                 won: 0,
                 drawn: 0,
@@ -107,7 +107,7 @@ const UsePremierLeagueStore = create<IPremierLeagueSlice>()(
               }
 
               return {
-                teamId,
+                id,
                 matches,
                 won,
                 drawn,

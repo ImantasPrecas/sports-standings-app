@@ -1,101 +1,61 @@
-// import { Check, Plus, X } from 'lucide-react'
-import { Button } from './ui/Button'
-import { Card } from './ui/Card'
-import { CardHeader } from './ui/CardHeader'
-import { CardTitle } from './ui/CardTitle'
-import { SectionWrapper } from './ui/SectionWrapper'
-import { StandingsTable } from './ui/StandingsTable'
-import tenisBallIcon from '../assets/tenisBall.svg'
 import useWimbledonStore from '@/store/wimbledonStore'
-import { useState } from 'react'
-import { Input } from './ui/Input'
-import { SelectEntity } from './ui/SelectEntity'
 import { Plus } from 'lucide-react'
-import {
-  checkExistingEntity,
-  checkForDuplication,
-  validateNumericInput,
-} from '@/lib/utils'
+
+import tenisBallIcon from '../assets/tenisBall.svg'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { CardHeader } from '@/components/ui/CardHeader'
+import { CardTitle } from '@/components/ui/CardTitle'
+import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { StandingsTable } from '@/components/ui/StandingsTable'
+import { Input } from '@/components/ui/Input'
+import { SelectEntity } from '@/components/ui/SelectEntity'
+import { GridLayout } from './EurobasketComponent'
+import { useNewEntity } from '@/hooks/useNewEtity'
+import { useAddScores } from '@/hooks/useAddSores'
 
 export const WimbledonComponent = () => {
   const { getPlayersList, addPlayer, getStandingsTable, addMatch, getMatches } =
     useWimbledonStore()
-  const [newPlayerName, setNewPlayerName] = useState('')
-  const [isAddingPlayer, setIsAddingPlayer] = useState(false)
-  const [isAddingScores, setIsAddingScores] = useState(false)
-  const [selectedPlayerA, setSelectedPlayerA] = useState('')
-  const [selectedPlayerB, setSelectedPlayerB] = useState('')
-  const [playerAScore, setPlayerAScore] = useState('')
-  const [playerBScore, setPlayerBScore] = useState('')
-  const [error, setError] = useState('')
 
   const teamsList = getPlayersList()
   const standingsTable = getStandingsTable()
   const existingMatches = Object.values(getMatches())
 
-  const handleAddPlayer = () => {
-    const newPlayer = newPlayerName.trim().toLowerCase()
+  const {
+    newEntityName: newPlayerName,
+    setNewEntityName: setNewPlayerName,
+    newEntityError: error,
+    isAddingNewEntity: isAddingPlayer,
+    setIsAddingNewEntity: setIsAddingPlayer,
+    handleAddNewEntity: handleAddPlayer,
+  } = useNewEntity({
+    addEntity: addPlayer,
+    validationId: 'name',
+    teamsList,
+  })
 
-    if (!newPlayer) {
-      setError('Player name is required')
-      return
-    }
-    if (checkExistingEntity(teamsList, 'name', newPlayer)) {
-      setError('Player already exists')
-      return
-    }
+  const {
+    p1: selectedPlayerA,
+    setP1: setSelectedPlayerA,
+    p2: selectedPlayerB,
+    setP2: setSelectedPlayerB,
+    score1: playerAScore,
+    setScore1: setPlayerAScore,
+    score2: playerBScore,
+    setScore2: setPlayerBScore,
+    isAddingScores,
+    setIsAddingScores,
+    scoreError,
+    handleSubmitScore,
+    resetInputs,
+  } = useAddScores({ existingMatches, addMatch })
 
-    addPlayer(newPlayerName.trim())
-    setIsAddingPlayer(false)
-    resetInputs()
-  }
-
-  const handleSubmitScore = () => {
-    if (!selectedPlayerA || !selectedPlayerB) {
-      setError('Please select both players.')
-      return
-    }
-
-    if (selectedPlayerA === selectedPlayerB) {
-      setError('Players must be different')
-      return
-    }
-    
-    if (!validateNumericInput(playerAScore) || !validateNumericInput(playerBScore)) {
-      setError('Please enter valid numeric scores.')
-      return
-    }
-
-
-    if (checkForDuplication(selectedPlayerA, selectedPlayerB, existingMatches)) {
-      setError('Players already played against each other')
-      return
-    }
-
-    if (teamsList.find((p) => p.name === newPlayerName.trim())) {
-      setError('Player already exists')
-      return
-    }
-
-    addMatch(selectedPlayerA, selectedPlayerB, Number(playerAScore), Number(playerBScore))
-    setIsAddingScores(false)
-    resetInputs()
-  }
-
-  const resetInputs = () => {
-    console.log('reseting')
-    setNewPlayerName('')
-    setSelectedPlayerA('')
-    setSelectedPlayerB('')
-    setPlayerAScore('')
-    setPlayerBScore('')
-    setError('')
-  }
   return (
     <SectionWrapper className='theme-design-3'>
       <Card>
         <WimbledonHeader />
-        <div className='grid lg:grid-cols-6 gap-2'>
+        <GridLayout>
           {/* ADD PLAYERS AND RESULTS BUTTONS */}
           <div className='col-span-2 lg:col-span-3 xl:col-span-2 mx-4 mb-4'>
             <div className='w-full rounded-md px-2'>
@@ -250,7 +210,9 @@ export const WimbledonComponent = () => {
                         >
                           Cancel
                         </Button>
-                        {error && <p className='text-xs text-yellow-400 mt-1'>{error}</p>}
+                        {scoreError && (
+                          <p className='text-xs text-yellow-400 mt-1'>{scoreError}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -263,7 +225,7 @@ export const WimbledonComponent = () => {
           <div className='col-span-2 lg:col-start-5 mx-4 mb-4 mt-4'>
             <StandingsTable tableData={standingsTable} />
           </div>
-        </div>
+        </GridLayout>
       </Card>
     </SectionWrapper>
   )
