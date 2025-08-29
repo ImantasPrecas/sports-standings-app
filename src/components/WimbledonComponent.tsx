@@ -219,7 +219,6 @@ export const WimbledonComponent = () => {
                 )}
               </div>
             </div>
-            {/* </div> */}
           </div>
           {/* STANDINGS TABLE */}
           <div className='col-span-2 lg:col-start-5 mx-4 mb-4 mt-4'>

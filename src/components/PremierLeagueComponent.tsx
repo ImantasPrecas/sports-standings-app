@@ -1,9 +1,4 @@
 import UsePremierLeagueStore from '@/store/premierLeagueStore'
-import { useState } from 'react'
-import {
-  checkForDuplication,
-  validateNumericInput,
-} from '@/lib/utils'
 
 import { Card } from '@/components/ui/Card'
 import { CardHeader } from '@/components/ui/CardHeader'
@@ -15,15 +10,11 @@ import { Button } from '@/components/ui/Button'
 import { StandingsTable } from '@/components/ui/StandingsTable'
 import { GridLayout } from './EurobasketComponent'
 import { useNewEntity } from '@/hooks/useNewEtity'
+import { useAddScores } from '@/hooks/useAddSores'
 
 export const PremierLeagueComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
     UsePremierLeagueStore()
-  const [selectedTeamA, setSelectedTeamA] = useState('')
-  const [selectedTeamB, setSelectedTeamB] = useState('')
-  const [teamAScore, setTeamAScore] = useState('')
-  const [teamBScore, setTeamBScore] = useState('')
-  const [scoreError, setScoreError] = useState('')
 
   const standingsTable = getStandingsTable()
   const teamsList = getTeamsList()
@@ -33,7 +24,6 @@ export const PremierLeagueComponent = () => {
     newEntityName: newTeamName,
     setNewEntityName: setNewTeamName,
     newEntityError: newTeamError,
-    setNewEntityError: setNewTeamError,
     handleAddNewEntity: handleAddNewTeam,
   } = useNewEntity({
     addEntity: addTeam,
@@ -41,40 +31,18 @@ export const PremierLeagueComponent = () => {
     teamsList,
   })
 
-  const handleSubmitScore = () => {
-    if (!selectedTeamA || !selectedTeamB) {
-      setScoreError('Please select both teams.')
-      return
-    }
-
-    if (selectedTeamA === selectedTeamB) {
-      setScoreError('Teams must be different')
-      return
-    }
-
-    if (!validateNumericInput(teamAScore) || !validateNumericInput(teamBScore)) {
-      setScoreError('Please enter valid scores for both teams.')
-      return
-    }
-
-    if (checkForDuplication(selectedTeamA, selectedTeamB, existingMatches)) {
-      setScoreError('Teams already played against each other')
-      return
-    }
-
-    addMatch(selectedTeamA, selectedTeamB, Number(teamAScore), Number(teamBScore))
-    resetInputs()
-  }
-
-  const resetInputs = () => {
-    setNewTeamName('')
-    setSelectedTeamA('')
-    setSelectedTeamB('')
-    setTeamAScore('')
-    setTeamBScore('')
-    setNewTeamError('')
-    setScoreError('')
-  }
+  const {
+    p1: selectedTeamA,
+    setP1: setSelectedTeamA,
+    p2: selectedTeamB,
+    setP2: setSelectedTeamB,
+    score1: teamAScore,
+    setScore1: setTeamAScore,
+    score2: teamBScore,
+    setScore2: setTeamBScore,
+    scoreError,
+    handleSubmitScore,
+  } = useAddScores({ existingMatches, addMatch })
 
   return (
     <SectionWrapper className='theme-design-1'>
