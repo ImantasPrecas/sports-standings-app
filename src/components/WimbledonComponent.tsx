@@ -9,15 +9,16 @@ import { CardTitle } from '@/components/ui/CardTitle'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { StandingsTable } from '@/components/ui/StandingsTable'
 import { Input } from '@/components/ui/Input'
-import { SelectEntity } from '@/components/ui/SelectEntity'
-import { GridLayout } from './EurobasketComponent'
 import { useNewEntity } from '@/hooks/useNewEtity'
 import { useAddScores } from '@/hooks/useAddSores'
+import { GridLayout } from './ui/GridLayout'
+import { AddScoresForm } from './AddScoresForm'
+import { useState } from 'react'
 
 export const WimbledonComponent = () => {
   const { getPlayersList, addPlayer, getStandingsTable, addMatch, getMatches } =
     useWimbledonStore()
-
+  const [isAddingScores, setIsAddingScores] = useState(false)
   const teamsList = getPlayersList()
   const standingsTable = getStandingsTable()
   const existingMatches = Object.values(getMatches())
@@ -35,21 +36,7 @@ export const WimbledonComponent = () => {
     teamsList,
   })
 
-  const {
-    p1: selectedPlayerA,
-    setP1: setSelectedPlayerA,
-    p2: selectedPlayerB,
-    setP2: setSelectedPlayerB,
-    score1: playerAScore,
-    setScore1: setPlayerAScore,
-    score2: playerBScore,
-    setScore2: setPlayerBScore,
-    isAddingScores,
-    setIsAddingScores,
-    scoreError,
-    handleSubmitScore,
-    resetInputs,
-  } = useAddScores({ existingMatches, addMatch })
+  const { resetInputs } = useAddScores({ existingMatches, addMatch })
 
   return (
     <SectionWrapper className='theme-design-3'>
@@ -72,7 +59,7 @@ export const WimbledonComponent = () => {
                 </Button>
                 {/* ADD PLAYER INPUT */}
                 {isAddingPlayer && (
-                  <div className='flex flex-col'>
+                  <div className='flex flex-col  w-full'>
                     <div className='flex  gap-2 w-full'>
                       <Input
                         id='wimbledon-player'
@@ -90,7 +77,6 @@ export const WimbledonComponent = () => {
                         variant='primary'
                         size='lg'
                         className='w-auto'
-                        // onClick={handleAddPlayer}
                         onClick={handleAddPlayer}
                       >
                         Add
@@ -129,91 +115,13 @@ export const WimbledonComponent = () => {
                     }`}
                   >
                     <div className='flex flex-col w-full gap-2 rounded-md  bg-primary px-2 py-4'>
-                      <div className='flex flex-col gap-2'>
-                        {/* SELECT TEAM */}
-                        <div className='flex gap-2'>
-                          {/* HOME TEAM */}
-                          <div className='w-full'>
-                            <SelectEntity
-                              size='lg'
-                              placeholder='Home team'
-                              options={teamsList}
-                              value={selectedPlayerA}
-                              onSelect={setSelectedPlayerA}
-                            />
-                          </div>
-                          {/* AWAY TEAM */}
-                          <div className='w-full'>
-                            <SelectEntity
-                              size='lg'
-                              placeholder='Away team'
-                              options={teamsList}
-                              value={selectedPlayerB}
-                              onSelect={setSelectedPlayerB}
-                            />
-                          </div>
-                        </div>
-                        {/* ENTER SCORE */}
-                        <div>
-                          {/* HOME TEAM */}
-                          <div className='flex gap-2'>
-                            <div className='w-full'>
-                              <Input
-                                id='euro-home-score'
-                                value={playerAScore}
-                                onChange={(e) => setPlayerAScore(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleSubmitScore()
-                                  }
-                                }}
-                                disabled={!selectedPlayerA}
-                                inputSize='lg'
-                                className='placeholder:text-sm bg-muted'
-                                placeholder='Home Score'
-                              />
-                            </div>
-
-                            {/* AWAY TEAM */}
-                            <div className='w-full'>
-                              <Input
-                                id='euro-away-score'
-                                value={playerBScore}
-                                onChange={(e) => setPlayerBScore(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleSubmitScore()
-                                  }
-                                }}
-                                disabled={!selectedPlayerB}
-                                inputSize='lg'
-                                className='placeholder:text-sm bg-muted'
-                                placeholder='Away Score'
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {/* ADD SCORE BUTTONS */}
-                      <div className='flex flex-col w-full gap-2 mt-4'>
-                        <Button variant='secondary' size='lg' onClick={handleSubmitScore}>
-                          Add Score
-                        </Button>
-                        <Button
-                          variant='primary'
-                          size='lg'
-                          className='border hover:bg-secondary/10'
-                          onClick={() => {
-                            setIsAddingScores(false)
-                            resetInputs()
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        {scoreError && (
-                          <p className='text-xs text-yellow-400 mt-1'>{scoreError}</p>
-                        )}
-                      </div>
+                      <AddScoresForm
+                        teamsList={teamsList}
+                        existingMatches={existingMatches}
+                        addMatch={addMatch}
+                        cancelButton={true}
+                        setIsAddingScores={setIsAddingScores}
+                      />
                     </div>
                   </div>
                 )}

@@ -15,6 +15,7 @@ export const useAddScores = ({ existingMatches, addMatch }: IuseAddScoresProps) 
   const [scoreError, setScoreError] = useState<string>('')
   const [isAddingScores, setIsAddingScores] = useState(false)
   const handleSubmitScore = () => {
+    console.log('isAddingScores:', isAddingScores)
     if (!p1 || !p2) {
       setScoreError('Please select both teams.')
       return

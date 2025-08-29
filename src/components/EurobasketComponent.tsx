@@ -1,6 +1,6 @@
 import ReactCountryFlag from 'react-country-flag'
 import UseEurobasketStore from '@/store/eurobasketStore'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { getCountriesList, getCountryLabel, getCountryValue } from '@/lib/utils'
 
@@ -10,15 +10,18 @@ import { Card } from '@/components/ui/Card'
 import { CardHeader } from '@/components/ui/CardHeader'
 import { CardTitle } from '@/components/ui/CardTitle'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { Input } from '@/components/ui/Input'
 import { SelectEntity } from '@/components/ui/SelectEntity'
 import { StandingsTable } from '@/components/ui/StandingsTable'
 import { useNewEntity } from '@/hooks/useNewEtity'
 import { useAddScores } from '@/hooks/useAddSores'
+import { AddScoresForm } from './AddScoresForm'
+import { GridLayout } from './ui/GridLayout'
 
 export const EurobasketComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
     UseEurobasketStore()
+
+  const [isAddingScores, setIsAddingScores] = useState(false)
 
   const countries = useMemo(() => getCountriesList(), [])
 
@@ -46,21 +49,7 @@ export const EurobasketComponent = () => {
     teamsList,
   })
 
-  const {
-    p1: selectedTeamA,
-    setP1: setSelectedTeamA,
-    p2: selectedTeamB,
-    setP2: setSelectedTeamB,
-    score1: teamAScore,
-    setScore1: setTeamAScore,
-    score2: teamBScore,
-    setScore2: setTeamBScore,
-    isAddingScores,
-    setIsAddingScores,
-    scoreError,
-    handleSubmitScore,
-    resetInputs,
-  } = useAddScores({
+  const { resetInputs } = useAddScores({
     existingMatches,
     addMatch,
   })
@@ -141,91 +130,13 @@ export const EurobasketComponent = () => {
                     }`}
                   >
                     <div className='flex flex-col w-full gap-2 rounded-md  bg-primary px-2 py-4'>
-                      <div className='flex flex-col gap-2'>
-                        {/* SELECT TEAM */}
-                        <div className='flex gap-2'>
-                          {/* HOME TEAM */}
-                          <div className='w-full'>
-                            <SelectEntity
-                              size='sm'
-                              placeholder='Home team'
-                              options={teamsList}
-                              value={selectedTeamA}
-                              onSelect={setSelectedTeamA}
-                            />
-                          </div>
-                          {/* AWAY TEAM */}
-                          <div className='w-full'>
-                            <SelectEntity
-                              size='sm'
-                              placeholder='Away team'
-                              options={teamsList}
-                              value={selectedTeamB}
-                              onSelect={setSelectedTeamB}
-                            />
-                          </div>
-                        </div>
-                        {/* ENTER SCORE */}
-                        <div>
-                          {/* HOME TEAM */}
-                          <div className='flex gap-2'>
-                            <div className='w-full'>
-                              <Input
-                                id='euro-home-score'
-                                value={teamAScore}
-                                onChange={(e) => setTeamAScore(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleSubmitScore()
-                                  }
-                                }}
-                                disabled={!selectedTeamA}
-                                inputSize='sm'
-                                className='placeholder:text-sm'
-                                placeholder='Home Score'
-                              />
-                            </div>
-
-                            {/* AWAY TEAM */}
-                            <div className='w-full'>
-                              <Input
-                                id='euro-away-score'
-                                value={teamBScore}
-                                onChange={(e) => setTeamBScore(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleSubmitScore()
-                                  }
-                                }}
-                                disabled={!selectedTeamB}
-                                inputSize='sm'
-                                className='placeholder:text-sm'
-                                placeholder='Away Score'
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {/* ADD SCORE BUTTONS */}
-                      <div className='flex flex-col w-full gap-2 mt-4'>
-                        <Button variant='secondary' size='sm' onClick={handleSubmitScore}>
-                          Add Score
-                        </Button>
-                        <Button
-                          variant='primary'
-                          size='sm'
-                          className='border hover:bg-secondary/10'
-                          onClick={() => {
-                            setIsAddingScores(false)
-                            resetInputs()
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        {scoreError && (
-                          <p className='text-xs text-red-500 mt-1'>{scoreError}</p>
-                        )}
-                      </div>
+                      <AddScoresForm
+                        teamsList={teamsList}
+                        existingMatches={existingMatches}
+                        addMatch={addMatch}
+                        cancelButton={true}
+                        setIsAddingScores={setIsAddingScores}
+                      />
                     </div>
                   </div>
                 )}
@@ -295,14 +206,4 @@ const EurobasketHeader = () => {
       </CardTitle>
     </CardHeader>
   )
-}
-
-export const GridLayout = ({
-  className,
-  children,
-}: {
-  className?: string
-  children: React.ReactNode
-}) => {
-  return <div className={`grid lg:grid-cols-6 gap-2 ${className}`}>{children}</div>
 }

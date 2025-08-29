@@ -5,12 +5,11 @@ import { CardHeader } from '@/components/ui/CardHeader'
 import { CardTitle } from '@/components/ui/CardTitle'
 import { Input } from '@/components/ui/Input'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { SelectEntity } from '@/components/ui/SelectEntity'
 import { Button } from '@/components/ui/Button'
 import { StandingsTable } from '@/components/ui/StandingsTable'
-import { GridLayout } from './EurobasketComponent'
 import { useNewEntity } from '@/hooks/useNewEtity'
-import { useAddScores } from '@/hooks/useAddSores'
+import { AddScoresForm } from './AddScoresForm'
+import { GridLayout } from './ui/GridLayout'
 
 export const PremierLeagueComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
@@ -31,19 +30,6 @@ export const PremierLeagueComponent = () => {
     teamsList,
   })
 
-  const {
-    p1: selectedTeamA,
-    setP1: setSelectedTeamA,
-    p2: selectedTeamB,
-    setP2: setSelectedTeamB,
-    score1: teamAScore,
-    setScore1: setTeamAScore,
-    score2: teamBScore,
-    setScore2: setTeamBScore,
-    scoreError,
-    handleSubmitScore,
-  } = useAddScores({ existingMatches, addMatch })
-
   return (
     <SectionWrapper className='theme-design-1'>
       <Card>
@@ -62,19 +48,14 @@ export const PremierLeagueComponent = () => {
           </div>
           {/* Add Score Section */}
           <div className='col-span-2 mx-2 mb-4 '>
-            <AddScoresForm
-              teamsList={teamsList}
-              selectedTeamA={selectedTeamA}
-              setSelectedTeamA={setSelectedTeamA}
-              selectedTeamB={selectedTeamB}
-              setSelectedTeamB={setSelectedTeamB}
-              teamAScore={teamAScore}
-              setTeamAScore={setTeamAScore}
-              teamBScore={teamBScore}
-              setTeamBScore={setTeamBScore}
-              handleSubmitScore={handleSubmitScore}
-              scoreError={scoreError}
-            />
+            <div className='flex flex-col w-full gap-2 rounded-md  bg-card-muted px-2 py-4'>
+              <AddScoresForm
+                teamsList={teamsList}
+                existingMatches={existingMatches}
+                addMatch={addMatch}
+                label='Add Match'
+              />
+            </div>
           </div>
 
           {/* STANDINGS TABLE */}
@@ -125,105 +106,6 @@ const AddTeamForm = ({
         </Button>
       </div>
       {newTeamError && <p className='text-xs text-red-500 mt-1'>{newTeamError}</p>}
-    </div>
-  )
-}
-
-interface AddScoresFormProps {
-  teamsList: { id: string; name: string }[]
-  selectedTeamA: string
-  setSelectedTeamA: React.Dispatch<React.SetStateAction<string>>
-  selectedTeamB: string
-  setSelectedTeamB: React.Dispatch<React.SetStateAction<string>>
-  teamAScore: string
-  setTeamAScore: React.Dispatch<React.SetStateAction<string>>
-  teamBScore: string
-  setTeamBScore: React.Dispatch<React.SetStateAction<string>>
-  handleSubmitScore: () => void
-  scoreError: string
-}
-
-const AddScoresForm = ({
-  teamsList,
-  selectedTeamA,
-  setSelectedTeamA,
-  selectedTeamB,
-  setSelectedTeamB,
-  teamAScore,
-  setTeamAScore,
-  teamBScore,
-  setTeamBScore,
-  handleSubmitScore,
-  scoreError,
-}: AddScoresFormProps) => {
-  return (
-    <div className='flex flex-col w-full gap-2 rounded-md  bg-card-muted px-2 py-4'>
-      <div className='flex flex-col gap-2'>
-        <p className='text-xs font-semibold'>Add Score</p>
-
-        {/* SELECT TEAM */}
-        <div className='flex gap-2'>
-          {/* HOME TEAM */}
-          <div className='w-full'>
-            <SelectEntity
-              size='sm'
-              placeholder='Home team'
-              options={teamsList}
-              value={selectedTeamA}
-              onSelect={setSelectedTeamA}
-            />
-          </div>
-
-          {/* AWAY TEAM */}
-          <div className='w-full'>
-            <SelectEntity
-              size='sm'
-              placeholder='Away team'
-              options={teamsList}
-              value={selectedTeamB}
-              onSelect={setSelectedTeamB}
-            />
-          </div>
-        </div>
-
-        {/* ENTER SCORE */}
-
-        <div>
-          {/* HOME TEAM */}
-          <div className='flex gap-2'>
-            <div className='w-full'>
-              <Input
-                id='prem-home-score'
-                value={teamAScore}
-                onChange={(e) => setTeamAScore(e.target.value)}
-                placeholder='Home Score'
-                disabled={!selectedTeamA}
-                inputSize='sm'
-                className='placeholder:text-sm'
-              />
-            </div>
-
-            {/* AWAY TEAM */}
-            <div className='w-full'>
-              <Input
-                id='prem-away-score'
-                value={teamBScore}
-                onChange={(e) => setTeamBScore(e.target.value)}
-                placeholder='Away Score'
-                disabled={!selectedTeamB}
-                inputSize='sm'
-                className='placeholder:text-sm'
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='w-full'>
-        <Button variant='secondary' size='sm' onClick={handleSubmitScore}>
-          Add Score
-        </Button>
-      </div>
-      {scoreError && <p className='text-xs text-red-500 mt-1'>{scoreError}</p>}
     </div>
   )
 }
