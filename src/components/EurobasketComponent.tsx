@@ -160,6 +160,7 @@ export const EurobasketComponent = () => {
               title={'Score table:'}
               rowLine={false}
               withFlag={true}
+              show={['won', 'drawn', 'lost', 'points']}
             />
           </div>
         </GridLayout>

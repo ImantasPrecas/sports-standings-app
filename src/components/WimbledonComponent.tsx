@@ -104,7 +104,10 @@ export const WimbledonComponent = () => {
           </div>
           {/* STANDINGS TABLE */}
           <div className='col-span-2 lg:col-start-5 mx-4 mb-4 mt-4'>
-            <StandingsTable tableData={standingsTable} />
+            <StandingsTable
+              tableData={standingsTable}
+              show={['matches', 'won', 'lost', 'points']}
+            />
           </div>
         </GridLayout>
       </Card>

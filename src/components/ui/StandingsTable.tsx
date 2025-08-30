@@ -17,6 +17,7 @@ interface StandingsTableProps {
   title?: string
   rowLine?: boolean
   withFlag?: boolean
+  show: ('matches' | 'won' | 'drawn' | 'lost' | 'points')[]
 }
 
 export const StandingsTable = ({
@@ -24,6 +25,7 @@ export const StandingsTable = ({
   title,
   rowLine,
   withFlag,
+  show,
 }: StandingsTableProps) => {
   return (
     <>
@@ -64,10 +66,10 @@ export const StandingsTable = ({
                     )}
                     <p>{team.name}</p>
                   </TableCell>
-                  {team.matches !== undefined && (
+                  {show.includes('matches') && team.matches !== undefined && (
                     <TableCell className='min-w-10 text-center'>{team.matches}</TableCell>
                   )}
-                  {team.won !== undefined && (
+                  {show.includes('won') && team.won !== undefined && (
                     <TableCell className='min-w-10 text-center'>
                       <p className='flex items-center justify-center gap-1'>
                         {team.won}
@@ -75,10 +77,10 @@ export const StandingsTable = ({
                       </p>
                     </TableCell>
                   )}
-                  {team.drawn !== undefined && (
+                  {show.includes('drawn') && team.drawn !== undefined && (
                     <TableCell className='min-w-10 text-center'>{team.drawn}</TableCell>
                   )}
-                  {team.lost !== undefined && (
+                  {show.includes('lost') && team.lost !== undefined && (
                     <TableCell className='min-w-10 text-center'>
                       <p className='flex items-center justify-center gap-1'>
                         {team.lost}
@@ -86,7 +88,7 @@ export const StandingsTable = ({
                       </p>
                     </TableCell>
                   )}
-                  {team.points !== undefined && (
+                  {show.includes('points') && team.points !== undefined && (
                     <TableCell className='min-w-10 text-center'>{team.points}</TableCell>
                   )}
                 </TableRow>

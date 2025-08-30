@@ -1,15 +1,16 @@
 import type { IMatch, IStandingEntry, IStandingsTable } from '@/interfaces/interface'
+import { updateEntityStats } from '@/lib/storeUtils'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
-interface Team {
+interface Player {
   id: string
   name: string
 }
 
 export interface IWimbledonStore {
-  players: Record<string, Team>
+  players: Record<string, Player>
   standings: Record<string, IStandingEntry>
   matches: Record<string, IMatch>
   addPlayer: (name: string) => void
@@ -68,10 +69,10 @@ const useWimbledonStore = create<IWimbledonStore>()(
               standings,
             }
           },
-          addMatch: (teamA, teamB, scoreA, scoreB) => {
+          addMatch: (playerA, playerB, scoreA, scoreB) => {
             const id = crypto.randomUUID()
             set((state) => {
-              state.matches[id] = { id, teamA, teamB, scoreA, scoreB }
+              state.matches[id] = { id, playerA, playerB, scoreA, scoreB }
             })
 
             let resultA: 'win' | 'loss' | 'draw' = 'draw'
@@ -85,50 +86,15 @@ const useWimbledonStore = create<IWimbledonStore>()(
               resultB = 'win'
             }
 
-            const updatePlayerStats = (id: string, result: string) => {
-              const playerStats = get().standings[id] || {
-                id,
-                name: get().players[id]?.name || '',
-                matches: 0,
-                won: 0,
-                lost: 0,
-                points: 0,
-                icons: {
-                  won: true,
-                  lost: true,
-                }
-              }
-              const matches = (playerStats.matches || 0) + 1
-              let won = playerStats.won || 0
-              let lost = playerStats.lost || 0
-              let points = playerStats.points || 0
-
-              if (result === 'win') {
-                won += 1
-                points += 3
-              } else if (result === 'draw') {
-                points += 1
-              } else if (result === 'loss') {
-                lost += 1
-              }
-
-              return {
-                id,
-                matches,
-                won,
-                lost,
-                points,
-                name: playerStats.name,
-                icons: {
-                  won: true,
-                  lost: true,
-                }
-              }
-            }
-
             set((state) => {
-              state.standings[teamA] = updatePlayerStats(teamA, resultA)
-              state.standings[teamB] = updatePlayerStats(teamB, resultB)
+              const playerAStats = get().standings[playerA]
+              const playerBStats = get().standings[playerB]
+              const isIcons = {
+                won: true,
+                lost: true
+              }
+              state.standings[playerA] = updateEntityStats(playerA, resultA, playerAStats, isIcons)
+              state.standings[playerB] = updateEntityStats(playerB, resultB, playerBStats, isIcons)
             })
           },
           getMatches: () => {

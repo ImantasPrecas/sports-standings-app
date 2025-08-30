@@ -57,7 +57,10 @@ export const PremierLeagueComponent = () => {
 
           {/* STANDINGS TABLE */}
           <div className='col-span-2 mx-2 mb-4'>
-            <StandingsTable tableData={standingsTable} />
+            <StandingsTable
+              tableData={standingsTable}
+              show={['matches', 'won', 'drawn', 'lost', 'points']}
+            />
           </div>
         </GridLayout>
       </Card>

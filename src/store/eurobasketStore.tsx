@@ -1,4 +1,5 @@
 import type { IMatch, IStandingEntry, IStandingsTable } from '@/interfaces/interface'
+import { updateEntityStats } from '@/lib/storeUtils'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
@@ -36,7 +37,6 @@ const UseEurobasketStore = create<IEurobasketStore>()(
               state.standings[id] = {
                 id,
                 name,
-                // matches: 0,
                 won: 0,
                 drawn: 0,
                 lost: 0,
@@ -80,36 +80,12 @@ const UseEurobasketStore = create<IEurobasketStore>()(
               resultB = 'win'
             }
 
-            const updateTeamStats = (id: string, result: string) => {
-              const teamStats = get().standings[id]
-              let won = teamStats.won || 0
-              let drawn = teamStats.drawn || 0
-              let lost = teamStats.lost || 0
-              let points = teamStats.points || 0
-
-              if (result === 'win') {
-                won += 1
-                points += 3
-              } else if (result === 'draw') {
-                drawn += 1
-                points += 1
-              } else if (result === 'loss') {
-                lost += 1
-              }
-
-              return {
-                id,
-                won,
-                drawn,
-                lost,
-                points,
-                name: teamStats.name,
-              }
-            }
-
             set((state) => {
-              state.standings[teamA] = updateTeamStats(teamA, resultA)
-              state.standings[teamB] = updateTeamStats(teamB, resultB)
+              const teamAStats = get().standings[teamA]
+              const teamBStats = get().standings[teamB]
+
+              state.standings[teamA] = updateEntityStats(teamA, resultA, teamAStats)
+              state.standings[teamB] = updateEntityStats(teamB, resultB, teamBStats)
             })
           },
           getMatches: () => {
