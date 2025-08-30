@@ -39,6 +39,10 @@ const useWimbledonStore = create<IWimbledonStore>()(
                 won: 0,
                 lost: 0,
                 points: 0,
+                icons: {
+                  won: true,
+                  lost: true,
+                }
               }
             })
           },

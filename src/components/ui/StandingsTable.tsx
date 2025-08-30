@@ -1,4 +1,5 @@
 import type { IStandingsTable } from '@/interfaces/interface'
+import { Check, X } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -70,7 +71,7 @@ export const StandingsTable = ({
                     <TableCell className='min-w-10 text-center'>
                       <p className='flex items-center justify-center gap-1'>
                         {team.won}
-                        <span> {team.icons?.won}</span>
+                        {team.icons?.won && <Check className='h-4 text-green-500' />}
                       </p>
                     </TableCell>
                   )}
@@ -81,7 +82,7 @@ export const StandingsTable = ({
                     <TableCell className='min-w-10 text-center'>
                       <p className='flex items-center justify-center gap-1'>
                         {team.lost}
-                        <span> {team.icons?.lost}</span>
+                        {team.icons?.lost && <X className='h-4 text-red-500' />}
                       </p>
                     </TableCell>
                   )}

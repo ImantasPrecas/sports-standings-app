@@ -1,5 +1,3 @@
-import type { JSX } from 'react'
-
 export interface IStandingEntry {
   id: string
   name: string
@@ -9,8 +7,8 @@ export interface IStandingEntry {
   lost: number
   points: number
   icons?: {
-    won?: JSX.Element
-    lost?: JSX.Element
+    won?: boolean
+    lost?: boolean
   }
 }
 
