@@ -1,101 +1,115 @@
-import { Check, Plus, X } from 'lucide-react'
-import { Button } from './ui/Button'
-import { Card } from './ui/Card'
-import { CardHeader } from './ui/CardHeader'
-import { CardTitle } from './ui/CardTitle'
-import { SectionWrapper } from './ui/SectionWrapper'
-import { StandingsTable } from './ui/StandingsTable'
-import tenisBallIcon from '../assets/tenisBall.svg'
+import useWimbledonStore from '@/store/wimbledonStore'
+import { Plus } from 'lucide-react'
 
-const tableData = {
-  tableHeader: [
-    { title: 'Player', key: 'name' },
-    { title: 'M', key: 'matches' },
-    { title: 'W', key: 'won' },
-    { title: 'L', key: 'lost' },
-    { title: 'Pts', key: 'points' },
-  ],
-  standings: [
-    {
-      name: 'Djokovich',
-      matches: 3,
-      won: 2,
-      lost: 0,
-      points: 7,
-      icons: {
-        won: <Check height={20} color='green' />,
-        lost: <X height={20} color='red' />,
-      },
-    },
-    {
-      name: 'Nadal',
-      matches: 3,
-      won: 2,
-      lost: 1,
-      points: 6,
-      icons: {
-        won: <Check height={20} color='green' />,
-        lost: <X height={20} color='red' />,
-      },
-    },
-    {
-      name: 'Federer',
-      matches: 3,
-      won: 1,
-      lost: 0,
-      points: 5,
-      icons: {
-        won: <Check height={20} color='green' />,
-        lost: <X height={20} color='red' />,
-      },
-    },
-    {
-      name: 'Murray',
-      matches: 3,
-      won: 1,
-      lost: 1,
-      points: 4,
-      icons: {
-        won: <Check height={20} color='green' />,
-        lost: <X height={20} color='red' />,
-      },
-    },
-  ],
-}
+import tenisBallIcon from '../assets/tenisBall.svg'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { StandingsTable } from '@/components/ui/StandingsTable'
+import { useNewEntity } from '@/hooks/useNewEtity'
+import { GridLayout } from './ui/GridLayout'
+import { AddScoresForm } from './AddScoresForm'
+import { useState } from 'react'
+import { ScoreboardHeader } from './ui/ScoreboardHeader'
+import { AddEntityForm } from './AddEntityForm'
 
 export const WimbledonComponent = () => {
+  const { getPlayersList, addPlayer, getStandingsTable, addMatch, getMatches } =
+    useWimbledonStore()
+  const [isAddingScores, setIsAddingScores] = useState(false)
+  const teamsList = getPlayersList()
+  const standingsTable = getStandingsTable()
+  const existingMatches = Object.values(getMatches())
+
+  const {
+    newEntityName: newPlayerName,
+    setNewEntityName: setNewPlayerName,
+    newEntityError: error,
+    isAddingNewEntity: isAddingPlayer,
+    setIsAddingNewEntity: setIsAddingPlayer,
+    handleAddNewEntity: handleAddPlayer,
+    resetForm: resetPlayerForm,
+  } = useNewEntity({
+    addEntity: addPlayer,
+    validationId: 'name',
+    teamsList,
+  })
+
   return (
     <SectionWrapper className='theme-design-3'>
       <Card>
-        <CardHeader className='bg-primary h-full'>
-          <CardTitle className='flex align-center text-primary-foreground gap-4'>
-            <img
-              src={tenisBallIcon}
-              alt='tenisball'
-              className='h-6 my-auto inline-block filter brightness-0 invert'
-            />
-            <p> Wimbledon</p>
-          </CardTitle>
-        </CardHeader>
-        <div className='flex flex-col lg:flex-row w-full justify-between gap-6'>
-          <div className='flex-row lg:flex-col gap-2 mt-4'>
-            {/* ADD TEAM AND RESULTS BUTTONS */}
-            <div className='mx-4'>
-              <div className='flex items-center justify-between lg:flex-col lg:gap-6'>
-                <Button variant='primary' size='lg' className='w-auto gap-2'>
+        <ScoreboardHeader title='Wimbledon' icon={tenisBallIcon} />
+        <GridLayout>
+          {/* ADD PLAYERS AND RESULTS BUTTONS */}
+          <div className='col-span-2 lg:col-span-3 xl:col-span-2 mx-4 my-4'>
+            <div className='w-full rounded-md px-2'>
+              <div className='flex lg:flex-col justify-between lg:gap-6'>
+                {/* SHOW ADD PLAYER INPUT BUTTON */}
+                <Button
+                  variant='primary'
+                  size='lg'
+                  className='w-auto gap-2'
+                  onClick={() => setIsAddingPlayer(true)}
+                  hidden={isAddingPlayer || isAddingScores}
+                >
                   <Plus size={16} /> Add Player
                 </Button>
-                <Button variant='secondary' size='lg' className='w-auto gap-2'>
+                {/* ADD PLAYER INPUT */}
+                {isAddingPlayer && (
+                  <AddEntityForm
+                    title='Add Player'
+                    newEntityName={newPlayerName}
+                    setNewEntityName={setNewPlayerName}
+                    handleAddNewEntity={handleAddPlayer}
+                    onCancel={() => {
+                      setIsAddingPlayer(false)
+                      resetPlayerForm()
+                    }}
+                    newEntityError={error}
+                    cancelButton={true}
+                    size='lg'
+                  />
+                )}
+
+                {/* SHOW ADD SCORE FORM BUTTON */}
+                <Button
+                  variant='secondary'
+                  size='lg'
+                  className='w-auto gap-2'
+                  hidden={isAddingPlayer || isAddingScores}
+                  onClick={() => setIsAddingScores(true)}
+                >
                   <Plus size={16} /> Add Score
                 </Button>
+                {/* ADD SCORE FORM */}
+                {isAddingScores && (
+                  <div
+                    className={`col-span-1 mb-4 w-full ${
+                      isAddingScores ? 'block' : 'hidden'
+                    }`}
+                  >
+                    <div className='flex flex-col w-full gap-2 rounded-md  bg-primary px-2 py-4'>
+                      <AddScoresForm
+                        teamsList={teamsList}
+                        existingMatches={existingMatches}
+                        addMatch={addMatch}
+                        cancelButton={true}
+                        setIsAddingScores={setIsAddingScores}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
           {/* STANDINGS TABLE */}
-          <div className='col-span-2 mx-4 mb-4 mt-4'>
-            <StandingsTable tableData={tableData} />
+          <div className='col-span-2 lg:col-start-5 mx-4 mb-4 mt-4'>
+            <StandingsTable
+              tableData={standingsTable}
+              show={['matches', 'won', 'lost', 'points']}
+            />
           </div>
-        </div>
+        </GridLayout>
       </Card>
     </SectionWrapper>
   )

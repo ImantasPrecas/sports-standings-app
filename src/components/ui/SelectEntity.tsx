@@ -4,26 +4,34 @@ export const SelectEntity = ({
   size,
   placeholder,
   options,
+  value,
+  onSelect,
 }: {
   size: 'sm' | 'default' | 'lg'
   placeholder: string
-  options: { name: string; value: string }[]
+  options: { id: string; name: string; flag?: string }[]
+  value: string
+  onSelect: (id: string) => void
 }) => {
   return (
-    <Select>
+    <Select onValueChange={onSelect} value={value}>
       <SelectTrigger size={size} className='w-full bg-muted'>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {options.map((option) => (
-          <SelectItem
-            key={option.value}
-            value={option.value}
-            className='p-2 hover:bg-gray-100 cursor-pointer'
-          >
-            {option.name}
-          </SelectItem>
-        ))}
+        {options.length === 0 ? (
+          <p className='mx-2 text-center text-sm'>No teams</p>
+        ) : (
+          options.map((option) => (
+            <SelectItem
+              key={option.id}
+              value={option.id}
+              className='flex p-2 hover:bg-gray-100 cursor-pointer'
+            >
+              {option.name}
+            </SelectItem>
+          ))
+        )}
       </SelectContent>
     </Select>
   )

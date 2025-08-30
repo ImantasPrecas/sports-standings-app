@@ -28,7 +28,11 @@ export const Input = ({
     <input
       type={type}
       data-slot='input'
-      className={cn(inputVariants({ inputSize }), className)}
+      className={cn(
+        inputVariants({ inputSize }),
+        'focus:ring-2 focus:ring-ring',
+        className
+      )}
       {...props}
     />
   )
