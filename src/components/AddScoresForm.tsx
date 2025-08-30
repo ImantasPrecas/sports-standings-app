@@ -95,7 +95,16 @@ export const AddScoresForm = ({
         </div>
       </div>
       <div className='flex flex-col w-full gap-2'>
-        <Button variant='secondary' size='sm' onClick={handleSubmitScore}>
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={() => {
+            if (setIsAddingScores) {
+              setIsAddingScores(false)
+            }
+            handleSubmitScore()
+          }}
+        >
           Add Score
         </Button>
         {cancelButton && (
@@ -104,7 +113,6 @@ export const AddScoresForm = ({
             size='sm'
             className='border hover:bg-secondary/10'
             onClick={() => {
-              console.log('clicked')
               if (setIsAddingScores) {
                 setIsAddingScores(false)
               }

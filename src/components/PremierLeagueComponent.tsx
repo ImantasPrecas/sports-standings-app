@@ -1,15 +1,13 @@
 import UsePremierLeagueStore from '@/store/premierLeagueStore'
 
 import { Card } from '@/components/ui/Card'
-import { CardHeader } from '@/components/ui/CardHeader'
-import { CardTitle } from '@/components/ui/CardTitle'
-import { Input } from '@/components/ui/Input'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { Button } from '@/components/ui/Button'
 import { StandingsTable } from '@/components/ui/StandingsTable'
 import { useNewEntity } from '@/hooks/useNewEtity'
 import { AddScoresForm } from './AddScoresForm'
 import { GridLayout } from './ui/GridLayout'
+import { ScoreboardHeader } from './ui/ScoreboardHeader'
+import { AddEntityForm } from './AddEntityForm'
 
 export const PremierLeagueComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
@@ -33,17 +31,16 @@ export const PremierLeagueComponent = () => {
   return (
     <SectionWrapper className='theme-design-1'>
       <Card>
-        <CardHeader className='bg-primary h-full'>
-          <CardTitle className='text-primary-foreground'>Premier League</CardTitle>
-        </CardHeader>
+        <ScoreboardHeader title='Premier League' />
         <GridLayout className='md:flex-row'>
           {/* Add team section */}
           <div className='col-span-2 mx-2'>
-            <AddTeamForm
-              setNewTeamName={setNewTeamName}
-              handleAddNewTeam={handleAddNewTeam}
-              newTeamName={newTeamName}
-              newTeamError={newTeamError}
+            <AddEntityForm
+              setNewEntityName={setNewTeamName}
+              handleAddNewEntity={handleAddNewTeam}
+              newEntityName={newTeamName}
+              newEntityError={newTeamError}
+              title='Add Team'
             />
           </div>
           {/* Add Score Section */}
@@ -65,47 +62,5 @@ export const PremierLeagueComponent = () => {
         </GridLayout>
       </Card>
     </SectionWrapper>
-  )
-}
-
-const AddTeamForm = ({
-  setNewTeamName,
-  handleAddNewTeam,
-  newTeamName,
-  newTeamError,
-}: {
-  setNewTeamName: React.Dispatch<React.SetStateAction<string>>
-  handleAddNewTeam: () => void
-  newTeamName: string
-  newTeamError: string
-}) => {
-  return (
-    <div className='w-full rounded-md bg-card-muted px-2 py-4'>
-      <p className='text-xs mb-2 font-semibold'>Add Team</p>
-      <div className='flex gap-2'>
-        <Input
-          onChange={(e) => setNewTeamName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleAddNewTeam()
-            }
-          }}
-          value={newTeamName}
-          id='team-name'
-          inputSize='sm'
-          placeholder='Team Name'
-        />
-        <Button
-          type='submit'
-          variant='secondary'
-          size='sm'
-          className='w-auto'
-          onClick={handleAddNewTeam}
-        >
-          Add
-        </Button>
-      </div>
-      {newTeamError && <p className='text-xs text-red-500 mt-1'>{newTeamError}</p>}
-    </div>
   )
 }

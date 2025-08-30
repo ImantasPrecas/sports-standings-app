@@ -7,15 +7,13 @@ import { getCountriesList, getCountryLabel, getCountryValue } from '@/lib/utils'
 import basketBall from '../assets/basketball-ball.svg'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
-import { CardHeader } from '@/components/ui/CardHeader'
-import { CardTitle } from '@/components/ui/CardTitle'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { SelectEntity } from '@/components/ui/SelectEntity'
 import { StandingsTable } from '@/components/ui/StandingsTable'
 import { useNewEntity } from '@/hooks/useNewEtity'
-import { useAddScores } from '@/hooks/useAddSores'
 import { AddScoresForm } from './AddScoresForm'
 import { GridLayout } from './ui/GridLayout'
+import { ScoreboardHeader } from './ui/ScoreboardHeader'
+import { SelectEntityForm } from './SelectEntityForm'
 
 export const EurobasketComponent = () => {
   const { getTeamsList, addTeam, getStandingsTable, addMatch, getMatches } =
@@ -28,7 +26,6 @@ export const EurobasketComponent = () => {
   const transformedCountries = countries.map((country) => ({
     id: country.value,
     name: country.label,
-    flag: country.value,
   }))
 
   const teamsList = getTeamsList()
@@ -43,27 +40,27 @@ export const EurobasketComponent = () => {
     isAddingNewEntity: isAddingTeam,
     setIsAddingNewEntity: setIsAddingTeam,
     handleAddNewEntity: handleAddNewTeam,
+    resetForm: resetInputs,
   } = useNewEntity({
     addEntity: addTeam,
     validationId: 'id',
     teamsList,
   })
 
-  const { resetInputs } = useAddScores({
-    existingMatches,
-    addMatch,
-  })
+  const onSelectCountry = (selectedOption: string) => {
+    setSelectedCountry(getCountryLabel(selectedOption.trim().toLowerCase()))
+  }
 
   return (
     <SectionWrapper className='theme-design-2'>
       <Card className='bg-primary'>
-        <EurobasketHeader />
+        <ScoreboardHeader title='EUROBASKET' icon={basketBall} />
         <GridLayout className='bg-primary'>
           {/* ADD Buttons */}
           <div className='col-span-2 mx-2'>
             <div className='w-full rounded-md px-2'>
               <div className='flex justify-between gap-2 w-full'>
-                {/* ADD TEAM BUTTON */}
+                {/* SHOW ADD-TEAM-SELECT-INPUT BUTTON */}
                 <Button
                   variant='secondary'
                   size='sm'
@@ -73,46 +70,20 @@ export const EurobasketComponent = () => {
                 >
                   <Plus size={16} /> Add Team
                 </Button>
-                {/* ADD TEAM INPUT */}
+                {/* ADD TEAM SELECT INPUT */}
                 {isAddingTeam && (
-                  <div className='flex-col gap-2 w-full'>
-                    <div className='flex gap-2'>
-                      <SelectEntity
-                        size='sm'
-                        placeholder='Select team'
-                        options={transformedCountries}
-                        value={getCountryValue(selectedCountry)}
-                        onSelect={(selectedOption) =>
-                          setSelectedCountry(
-                            getCountryLabel(selectedOption.trim().toLowerCase())
-                          )
-                        }
-                      />
-                      <Button
-                        variant='secondary'
-                        size='sm'
-                        className='w-auto'
-                        onClick={handleAddNewTeam}
-                      >
-                        Add
-                      </Button>
-                      <Button
-                        variant='secondary'
-                        size='sm'
-                        className='w-auto'
-                        onClick={() => {
-                          setIsAddingTeam(false)
-                          resetInputs()
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                    {error && <div className='text-red-500 text-sm mt-1'>{error}</div>}
-                  </div>
+                  <SelectEntityForm
+                    options={transformedCountries}
+                    value={getCountryValue(selectedCountry)}
+                    onSelect={onSelectCountry}
+                    handleAddNewTeam={handleAddNewTeam}
+                    resetInputs={resetInputs}
+                    error={error}
+                    setIsAddingTeam={setIsAddingTeam}
+                  />
                 )}
 
-                {/* ADD SCORE BUTTON */}
+                {/* SHOW ADD-SCORES-FORM BUTTON */}
                 <Button
                   variant='secondary'
                   size='sm'
@@ -146,7 +117,6 @@ export const EurobasketComponent = () => {
           {/* PLAYED MATCHES */}
           <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0'>
             <div className='flex flex-col text-primary-foreground'>
-              {/* Map through played matches data */}
               {matches.length === 0 ? (
                 <p className='text-sm text-center'>No matches played yet</p>
               ) : (
@@ -185,25 +155,15 @@ export const EurobasketComponent = () => {
           </div>
           {/* SCORE TABLE */}
           <div className='col-span-2 mx-6 mb-4 mt-4 lg:mt-0 pb-10'>
-            <StandingsTable tableData={standingsTable} rowLine={false} withFlag={true} />
+            <StandingsTable
+              tableData={standingsTable}
+              title={'Score table:'}
+              rowLine={false}
+              withFlag={true}
+            />
           </div>
         </GridLayout>
       </Card>
     </SectionWrapper>
-  )
-}
-
-const EurobasketHeader = () => {
-  return (
-    <CardHeader className='bg-primary h-full'>
-      <CardTitle className='flex align-center text-primary-foreground gap-4'>
-        <img
-          src={basketBall}
-          alt='Basketball'
-          className='h-6 my-auto inline-block filter brightness-0 invert'
-        />
-        <p>EUROBASKET</p>
-      </CardTitle>
-    </CardHeader>
   )
 }
