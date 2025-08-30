@@ -13,7 +13,7 @@ export interface IStandingEntry {
 }
 
 export interface IStandingsTable {
-  tableHeader: { title: string; key: string }[]
+  tableHeader: { title: string; key: string, icon?: boolean }[]
   standings: IStandingEntry[]
 }
 

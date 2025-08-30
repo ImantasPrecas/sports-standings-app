@@ -61,8 +61,8 @@ const useWimbledonStore = create<IWimbledonStore>()(
               tableHeader: [
                 { title: 'Player', key: 'name' },
                 { title: 'M', key: 'matches' },
-                { title: 'W', key: 'won' },
-                { title: 'L', key: 'lost' },
+                { title: 'W', key: 'won', icon: true },
+                { title: 'L', key: 'lost', icon: true },
                 { title: 'Pts', key: 'points' },
               ],
               standings,
@@ -93,6 +93,10 @@ const useWimbledonStore = create<IWimbledonStore>()(
                 won: 0,
                 lost: 0,
                 points: 0,
+                icons: {
+                  won: true,
+                  lost: true,
+                }
               }
               const matches = (playerStats.matches || 0) + 1
               let won = playerStats.won || 0
@@ -115,6 +119,10 @@ const useWimbledonStore = create<IWimbledonStore>()(
                 lost,
                 points,
                 name: playerStats.name,
+                icons: {
+                  won: true,
+                  lost: true,
+                }
               }
             }
 

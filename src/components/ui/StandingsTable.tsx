@@ -37,11 +37,11 @@ export const StandingsTable = ({
             {tableData.tableHeader
               .filter((header) => header.key !== 'name')
               .map((header) => (
-                <TableHead
-                  className={'flex items-center justify-center min-w-[40px]'}
-                  key={header.key}
-                >
-                  <p>{header.title}</p>
+                <TableHead className={'min-w-10 text-center'} key={header.key}>
+                  <p className='flex items-center justify-center gap-1'>
+                    {header.title}{' '}
+                    {header.icon && <X className='h-4 text-red-500 opacity-0' />}
+                  </p>
                 </TableHead>
               ))}
           </TableRow>
