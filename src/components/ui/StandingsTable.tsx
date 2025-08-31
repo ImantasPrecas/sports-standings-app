@@ -39,8 +39,8 @@ export const StandingsTable = ({
             {tableData.tableHeader
               .filter((header) => header.key !== 'name')
               .map((header) => (
-                <TableHead className={'min-w-10 text-center'} key={header.key}>
-                  <p className='flex items-center justify-center gap-1'>
+                <TableHead className={'flex min-w-10 text-center items-center justify-center'} key={header.key}>
+                  <p className='flex justify-center gap-1'>
                     {header.title}{' '}
                     {header.icon && <X className='h-4 text-red-500 opacity-0' />}
                   </p>
@@ -101,7 +101,7 @@ export const StandingsTable = ({
           <TableFooter>
             <TableRow className='my-4'>
               <TableHead>
-                <p className='text-sm font-normal text-center'>
+                <p className='text-sm font-normal text-center text-wrap'>
                   No standings available. Add a team to get started.
                 </p>
               </TableHead>
