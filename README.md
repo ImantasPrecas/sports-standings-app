@@ -6,7 +6,7 @@
 - Tailwind CSS
 - Zustand for state managment
 
-Check out the live demo on [GitHub Pages](https://imantas.precas.github.io/sports-standings-app)
+Check out the live demo on [GitHub Pages](https://imantasprecas.github.io/sports-standings-app/)
 
 ---
 
